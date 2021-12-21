@@ -178,7 +178,7 @@ def sidebar_plot(adj_price):
   elif adj_price.iloc[-1] < adj_price.iloc[0]:
     color = "Red"
 
-  fig, ax = pyplot.subplots(figsize=(1, 1))
+  fig, ax = pyplot.subplots(figsize=(.1, .1))
   ax.get_xaxis().set_visible(False)
   ax.get_yaxis().set_visible(False)
   ax.plot(adj_price, color=color)
