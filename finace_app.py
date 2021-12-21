@@ -228,10 +228,12 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              index=['Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
+cols_name3 = st.columns(2)
+
 if display_format == "Percentages":
-    st.dataframe(port_max_sharpe_pct)
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
-    st.dataframe(performance_stats)
+    cols_name3[0].dataframe(port_max_sharpe_pct)
+    cols_name3[1].dataframe(performance_stats)
     
 elif display_format == "Fractions Of Capital":
     st.dataframe(port_max_sharpe_capital)
