@@ -20,6 +20,8 @@ st.set_page_config(
 
 st.title('Stock Regime Detection APP')
 
+c1, c2, c3, c4 = st.columns((1, 1, 2, 1))
+
 ticker = st.text_input(label="Please type in a stock symbol.", value="AAPL")
 
 today = date.today()
