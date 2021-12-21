@@ -16,6 +16,8 @@ from pypfopt import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
 
+import matplotlib.pyplot as plt
+
 # Helper Functions
 def get_datetime(past_days=365):
   today = date.today()
