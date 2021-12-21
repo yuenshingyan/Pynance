@@ -196,7 +196,7 @@ cols_name2 = st.columns(4)
 default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
 tickers = cols_name2[0].text_input(label="Please type in a portfolio", value=default_tickers)
 start_date_port_opt = cols_name2[1].date_input("From", one_year_ago, key="port_opt")
-end_date_port_opt = cols_name2[2].date_input("To", today)
+end_date_port_opt = cols_name2[2].date_input("To", today, key="port_opt")
 capital = st.number_input('Insert your capital')
 
 acp = get_adj_close_prices(input_str.split(), start_date, end_date)
