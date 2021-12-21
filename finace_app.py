@@ -231,9 +231,9 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 
 cols_name3 = st.columns(3)
 
-if add_ticker not in st.session_state['personal_portfolio']:
-  if add_ticker != "SYMBOL":
-    st.session_state['personal_portfolio'].append(add_ticker)
+# if add_ticker not in st.session_state['personal_portfolio']:
+#   if add_ticker != "SYMBOL":
+#     st.session_state['personal_portfolio'].append(add_ticker)
 
 if 'personal_portfolio' not in st.session_state:
     st.session_state['personal_portfolio'] = []  
