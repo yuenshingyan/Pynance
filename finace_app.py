@@ -171,14 +171,14 @@ def regime_detection(historical_price, ticker):
   return p 
 
 st.set_page_config(
-    page_title="Stock Regime Detection APP",
+    page_title="Pynance",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
 # Main
-st.title('Finance APP')
+st.title('Pynance')
 
 # Regime Detection 
 st.header("Regime Detection")
@@ -231,6 +231,11 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 
 # get log return
 log_ret = np.log1p(acp.pct_change(1))
+
+# sub header
+# Text input
+# Add Button
+# store to session
 
 cols_name3 = st.columns(3)
 
