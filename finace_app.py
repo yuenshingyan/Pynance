@@ -206,12 +206,19 @@ display_format = st.radio(
      "",
      ('Percentages', 'Fractions Of Capital'))
 
+# Rounding
+cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
+cleaned_weights_max_sharpe_pct = round(cleaned_weights_max_sharpe * 100, 2)
+
+cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * capital, 2)
+cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
+
 if display_format == "Percentages":
-    st.write(f"Minimum Volatility Portfolio (%): {st.dataframe(round(cleaned_weights_min_volatility * 100, 2))}")
-    st.write(f"Maximum Sharpe Portfolio (%): {st.dataframe(round(cleaned_weights_max_sharpe * 100, 2))}")
+    st.write(f"Minimum Volatility Portfolio (%): {st.dataframe(cleaned_weights_min_volatility_pct)}")
+    st.write(f"Maximum Sharpe Portfolio (%): {st.dataframe(cleaned_weights_max_sharpe_pct)}")
     
 elif display_format == "Fractions Of Capital":
-    st.write(f"Minimum Volatility Portfolio: {st.dataframe(round(cleaned_weights_min_volatility * capital, 2))}")
-    st.write(f"Maximum Sharpe Portfolio: {st.dataframe(round(cleaned_weights_max_sharpe * capital, 2))}")
+    st.write(f"Minimum Volatility Portfolio: {st.dataframe(cleaned_weights_min_volatility_capital)}")
+    st.write(f"Maximum Sharpe Portfolio: {st.dataframe(cleaned_weights_max_sharpe_capital)}")
 
 # @st.cache(suppress_st_warning=True)
