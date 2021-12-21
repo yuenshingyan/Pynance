@@ -232,10 +232,14 @@ cols_name3 = st.columns(3)
 
 if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
+    cols_name3[0].subheader("Optimized Portfolio")
+    cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_pct)
     cols_name3[1].dataframe(performance_stats)
     
 elif display_format == "Fractions Of Capital":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
+    cols_name3[0].subheader("Optimized Portfolio")
+    cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
