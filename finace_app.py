@@ -248,11 +248,11 @@ elif display_format == "Fractions Of Capital":
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
  
-if add_ticker not in st.session_state['personal_portfolio']:
-  if add_ticker != "SYMBOL":
-    st.session_state['personal_portfolio'].append(add_ticker)
-
 add_ticker = st.sidebar.text_input(label="Please type in a stock symbol.", value="SYMBOL", key="add_ticker")    
     
 option = st.sidebar.selectbox('Watch List', st.session_state['personal_portfolio'])
 add_selectbox = st.sidebar.selectbox("Add To Portfolio", option)
+
+if add_ticker not in st.session_state['personal_portfolio']:
+  if add_ticker != "SYMBOL":
+    st.session_state['personal_portfolio'].append(add_ticker)
