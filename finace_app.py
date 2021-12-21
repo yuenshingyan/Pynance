@@ -228,6 +228,9 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              index=['Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
+# get log return
+log_ret = np.log1p(acp.pct_change(1))
+
 cols_name3 = st.columns(3)
 
 if display_format == "Percentages":
@@ -236,6 +239,7 @@ if display_format == "Percentages":
     cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_pct)
     cols_name3[1].dataframe(performance_stats)
+    cols_name3[2].bar_chart(log_ret)
     
 elif display_format == "Fractions Of Capital":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
@@ -243,3 +247,4 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
+    cols_name3[2].bar_chart(log_ret)
