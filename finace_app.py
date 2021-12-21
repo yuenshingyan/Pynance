@@ -253,6 +253,6 @@ add_ticker = st.sidebar.text_input(label="Please type in a stock symbol.", value
 option = st.sidebar.selectbox('Watch List', st.session_state['personal_portfolio'])
 add_selectbox = st.sidebar.selectbox("Add To Portfolio", option)
 
-if add_ticker not in st.session_state['personal_portfolio']:
-  if add_ticker != "SYMBOL":
-    st.session_state['personal_portfolio'].append(add_ticker)
+# if add_ticker not in st.session_state['personal_portfolio']:
+#   if add_ticker != "SYMBOL":
+#     st.session_state['personal_portfolio'].append(add_ticker)
