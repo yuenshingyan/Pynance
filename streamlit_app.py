@@ -124,7 +124,7 @@ def regime_detection(historical_price, ticker):
     
   return p 
 
-p = regime_detection(historical_price)
+p = regime_detection(historical_price, ticker)
 st.bokeh_chart(p, use_container_width=True)
 
 # @st.cache(suppress_st_warning=True)
