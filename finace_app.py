@@ -241,7 +241,7 @@ if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     cols_name3[0].subheader("Optimized Portfolio")
     cols_name3[1].subheader("Performance Stats")
-    cols_name3[2].subheader("Create A Porfoliio")
+    cols_name3[2].subheader("Create A Porfolio")
     
     cols_name3[0].dataframe(port_max_sharpe_pct)
     cols_name3[1].dataframe(performance_stats)
@@ -251,11 +251,11 @@ elif display_format == "Fractions Of Capital":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
     cols_name3[0].subheader("Optimized Portfolio")
     cols_name3[1].subheader("Performance Stats")
-    cols_name3[2].subheader("Create A Porfoliio")
+    cols_name3[2].subheader("Create A Porfolio")
     
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
     add_ticker = cols_name3[2].text_input(label="Please type in a stock symbol.", value="AAPL", key="add_ticker")
  
 st.session_state['personal_portfolio'].append(add_ticker)
-st.write(st.session_state['personal_portfolio'])
+st.markdown(st.session_state['personal_portfolio'])
