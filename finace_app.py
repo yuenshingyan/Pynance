@@ -53,12 +53,12 @@ def port_opt(acp):
   cleaned_weights_min_volatility = pd.DataFrame(
       cleaned_weights_min_volatility.values(), 
       index=cleaned_weights_min_volatility, 
-      columns=['Buy'])
+      columns=['Minimum Volatility Portfolio'])
   
   cleaned_weights_max_sharpe = pd.DataFrame(
       cleaned_weights_max_sharpe.values(), 
       index=cleaned_weights_max_sharpe, 
-      columns=['Buy'])
+      columns=['tMaximum Sharpe Portfolio'])
 
   # Store Performance Stats
   performance_stats_min_volatility = ef_min_volatility.portfolio_performance()
@@ -214,11 +214,9 @@ cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * 
 cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
 
 if display_format == "Percentages":
-    st.write("Minimum Volatility Portfolio (%): \tMaximum Sharpe Portfolio (%): ")
     st.dataframe(cleaned_weights_min_volatility_pct), {st.dataframe(cleaned_weights_max_sharpe_pct)}
     
 elif display_format == "Fractions Of Capital":
-    st.write("Minimum Volatility Portfolio: \tMaximum Sharpe Portfolio: ")
     st.dataframe(cleaned_weights_min_volatility_capital), {st.dataframe(cleaned_weights_max_sharpe_capital)}
     
 
