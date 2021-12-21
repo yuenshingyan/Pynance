@@ -231,8 +231,8 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 
 cols_name3 = st.columns(3)
 
-if 'personal_portfolio' not in st.session_state:
-    st.session_state['personal_portfolio'] = []  
+if 'Watchlist' not in st.session_state:
+    st.session_state['Watchlist'] = []  
     
 if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
@@ -248,13 +248,13 @@ elif display_format == "Fractions Of Capital":
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
  
-add_ticker = st.sidebar.text_input(label="Add To Portfolio", value="Type a stock symbol", key="add_ticker")    
-if add_ticker not in st.session_state['personal_portfolio']:
+add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
+if add_ticker not in st.session_state['Watchlist']:
   if add_ticker != "Type a stock symbol":
-    st.session_state['personal_portfolio'].append(add_ticker)
+    st.session_state['Watchlist'].append(add_ticker)
     
 else:
-  st.session_state['personal_portfolio'].remove(add_ticker)
+  st.session_state['Watchlist'].remove(add_ticker)
     
-st.sidebar.text('Watch List')
-st.sidebar.text("\n".join(st.session_state['personal_portfolio']))
+st.sidebar.text('Watchlist\n')
+st.sidebar.text("\n".join(st.session_state['Watchlist']))
