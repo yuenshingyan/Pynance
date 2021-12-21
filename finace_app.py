@@ -25,6 +25,7 @@ def get_datetime(past_days=365):
   return str(one_year_ago), str(today)
 
 # Adjusted Close Prices
+@st.cache(suppress_st_warning=True)
 def get_adj_close_prices(ticks, one_year_ago, today):
   close_prices = {}
   for t in ticks:
