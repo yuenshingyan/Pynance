@@ -20,8 +20,10 @@ st.set_page_config(
 
 
 st.title('Stock Regime Detection APP')
+ticker = st.text_input(label="Please type in a stock symbol.")
+
+historical_price = yf.download(ticker, start="2011-12-20", end="2021-12-20")
 
 
-
-@st.cache(suppress_st_warning=True)
+# @st.cache(suppress_st_warning=True)
 # st.write("Result：", 10)
