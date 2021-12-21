@@ -4,3 +4,4 @@ pandas==1.2.4
 yfinance==0.1.67
 hmmlearn==0.2.6
 bokeh==2.4.1
+pypfopt==1.5.1
