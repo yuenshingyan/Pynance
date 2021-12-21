@@ -22,7 +22,7 @@ st.title('Stock Regime Detection APP')
 ticker = st.text_input(label="Please type in a stock symbol.", value="AAPL")
 
 today = date.today()
-days = datetime.timedelta(30)
+days = date.timedelta(30)
 one_month_ago = today - days
 
 start_date = st.date_input("Date Range", one_month_ago)
