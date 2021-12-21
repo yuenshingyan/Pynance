@@ -278,5 +278,5 @@ for i in range(len(st.session_state['Watchlist'])):
   with st.columns(2)[0]:
     st.session_state['Watchlist'][i]
     
-  with st.columns(2)[1]:
-    st.sidebar.pyplot(sidebar_plot(t_close))
+#   with st.columns(2)[1]:
+#     st.sidebar.pyplot(sidebar_plot(t_close))
