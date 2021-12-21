@@ -95,7 +95,6 @@ def regime_detection(historical_price, ticker):
   returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
   returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
 
-
   w = 12 * 60 * 60 * 1000 # half day in ms
 
   TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
@@ -169,6 +168,20 @@ def regime_detection(historical_price, ticker):
   p.add_layout(p.legend[0], 'left')
     
   return p 
+
+def sidebar_plot(adj_price):
+  if adj_price.iloc[-1] > adj_price.iloc[0]:
+    color = "Green"
+
+  elif adj_price.iloc[-1] < adj_price.iloc[0]:
+    color = "Red"
+
+  fig, ax = plt.subplots(figsize=(1, 1))
+  ax.get_xaxis().set_visible(False)
+  ax.get_yaxis().set_visible(False)
+  ax.plot(adj_price, color=color)
+
+  return fig
 
 st.set_page_config(
     page_title="Pynance",
@@ -256,3 +269,6 @@ else:
     
 st.sidebar.text('Watchlist\n')
 st.sidebar.text("\n".join(st.session_state['Watchlist']))
+
+for t in st.session_state['Watchlist']:
+  st.sidebar.pyplot(sidebar_plot(t["Adj Close"]))
