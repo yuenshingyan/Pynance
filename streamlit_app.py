@@ -21,5 +21,7 @@ st.set_page_config(
 
 st.title('Stock Regime Detection APP')
 
-# @st.cache(suppress_st_warning=True)
+
+
+@st.cache(suppress_st_warning=True)
 # st.write("Result：", 10)
