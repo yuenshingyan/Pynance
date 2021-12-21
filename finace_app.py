@@ -272,4 +272,4 @@ st.sidebar.text("\n".join(st.session_state['Watchlist']))
 
 for t in st.session_state['Watchlist']:
   t_close = yf.download(t, start="2020-12-20", end="2021-12-20")['Adj Close']
-  st.sidebar.pyplot(t_close)
+  st.pyplot(t_close)
