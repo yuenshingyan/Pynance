@@ -53,12 +53,12 @@ def port_opt(acp):
   cleaned_weights_min_volatility = pd.DataFrame(
       cleaned_weights_min_volatility.values(), 
       index=cleaned_weights_min_volatility, 
-      columns=['Minimum Volatility Portfolio'])
+      columns=['Min Volatility'])
   
   cleaned_weights_max_sharpe = pd.DataFrame(
       cleaned_weights_max_sharpe.values(), 
       index=cleaned_weights_max_sharpe, 
-      columns=['tMaximum Sharpe Portfolio'])
+      columns=['Max Sharpe'])
 
   # Store Performance Stats
   performance_stats_min_volatility = ef_min_volatility.portfolio_performance()
