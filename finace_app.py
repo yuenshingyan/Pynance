@@ -254,4 +254,5 @@ if add_ticker not in st.session_state['personal_portfolio']:
     st.session_state['personal_portfolio'].append(add_ticker)
     
 # option = st.sidebar.selectbox('Watch List', )
-st.sidebar.container()#st.session_state['personal_portfolio']
+add_container = st.sidebar.container()
+add_container.write(st.session_state['personal_portfolio'])
