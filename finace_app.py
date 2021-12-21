@@ -199,7 +199,7 @@ start_date_port_opt = cols_name2[1].date_input("From", one_year_ago, key="port_o
 end_date_port_opt = cols_name2[2].date_input("To", today, key="port_opt")
 capital = st.number_input('Insert your capital')
 
-acp = get_adj_close_prices(input_str.split(), start_date, end_date)
+acp = get_adj_close_prices(tickers.split(), start_date, end_date)
 cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
 
 display_format = st.radio(
