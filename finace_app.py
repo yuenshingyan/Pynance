@@ -16,7 +16,7 @@ from pypfopt import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
 
-import matplotlib.pyplot as plt
+from matplotlib import pyplot
 
 # Helper Functions
 def get_datetime(past_days=365):
@@ -178,7 +178,7 @@ def sidebar_plot(adj_price):
   elif adj_price.iloc[-1] < adj_price.iloc[0]:
     color = "Red"
 
-  fig, ax = plt.subplots(figsize=(1, 1))
+  fig, ax = pyplot.subplots(figsize=(1, 1))
   ax.get_xaxis().set_visible(False)
   ax.get_yaxis().set_visible(False)
   ax.plot(adj_price, color=color)
