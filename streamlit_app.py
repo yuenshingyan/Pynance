@@ -5,7 +5,6 @@ import streamlit as st
 import math
 from bokeh.plotting import figure, show, output_file
 from bokeh.io import output_notebook
-output_notebook()
 
 import yfinance as yf
 import pandas as pd
@@ -23,8 +22,6 @@ st.set_page_config(
 st.title('My first App')
 
 @st.cache(suppress_st_warning=True)
-
 a = st.slider("選擇一個數字", 0, 10)
 result = a
 st.write("結果：", result)
-
