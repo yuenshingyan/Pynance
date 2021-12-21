@@ -254,7 +254,7 @@ elif display_format == "Fractions Of Capital":
  
 
 
-# add_ticker = st.sidebar.text_input(label="Add To Portfolio", value="Type a stock symbol", key="add_ticker")    
+add_ticker = st.sidebar.text_input(label="Add To Portfolio", value="Type a stock symbol", key="add_ticker")    
     
-# option = st.sidebar.selectbox('Watch List', st.session_state['personal_portfolio'])
-# st.sidebar.write(option)
+option = st.sidebar.selectbox('Watch List', st.session_state['personal_portfolio'])
+st.sidebar.write(option)
