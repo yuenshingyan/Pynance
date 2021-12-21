@@ -3,7 +3,7 @@ import time
 import streamlit as st
 
 import math
-from bokeh.plotting import figure, show, output_file
+from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
 from hmmlearn import hmm
 import yfinance as yf
@@ -124,7 +124,6 @@ def regime_detection(historical_price):
   return p 
 
 p = regime_detection(historical_price)
-st.write(type(p))
 st.bokeh_chart(p)
 
 # @st.cache(suppress_st_warning=True)
