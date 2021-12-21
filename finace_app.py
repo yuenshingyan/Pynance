@@ -273,10 +273,10 @@ st.sidebar.text('Watchlist\n')
 st.sidebar.text("\n".join(st.session_state['Watchlist']))
 
 
-for i in range(len(st.session_state['Watchlist'])):
-  t_close = yf.download(st.session_state['Watchlist'][i], start="2020-12-20", end="2021-12-20")['Adj Close']
-  with st.columns(2)[0]:
-    st.session_state['Watchlist'][i]
+# for i in range(len(st.session_state['Watchlist'])):
+#   t_close = yf.download(st.session_state['Watchlist'][i], start="2020-12-20", end="2021-12-20")['Adj Close']
+#   with st.columns(2)[0]:
+#     st.session_state['Watchlist'][i]
     
 #   with st.columns(2)[1]:
 #     st.sidebar.pyplot(sidebar_plot(t_close))
