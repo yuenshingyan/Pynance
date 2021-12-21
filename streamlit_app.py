@@ -10,14 +10,12 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-
 st.set_page_config(
-    page_title="自定義網頁標題",
-    page_icon="random",
+    page_title="Stock Regime Detection APP",
+    page_icon="📈",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-
 
 st.title('Stock Regime Detection APP')
 
