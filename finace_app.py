@@ -50,15 +50,15 @@ def port_opt(acp):
   cleaned_weights_max_sharpe = ef_max_sharpe.clean_weights()
 
   # Turn Weights Into Pandas Dataframes
-  cleaned_weights_min_volatility = st.dataframe(pd.DataFrame(
+  cleaned_weights_min_volatility = pd.DataFrame(
       cleaned_weights_min_volatility.values(), 
       index=cleaned_weights_min_volatility, 
-      columns=['Buy']))
+      columns=['Buy'])
   
-  cleaned_weights_max_sharpe = st.dataframe(pd.DataFrame(
+  cleaned_weights_max_sharpe = pd.DataFrame(
       cleaned_weights_max_sharpe.values(), 
       index=cleaned_weights_max_sharpe, 
-      columns=['Buy']))
+      columns=['Buy'])
 
   # Store Performance Stats
   performance_stats_min_volatility = ef_min_volatility.portfolio_performance()
@@ -207,11 +207,11 @@ display_format = st.radio(
      ('Percentages', 'Fractions Of Capital'))
 
 if display_format == "Percentages":
-    st.write(f"Minimum Volatility Portfolio (%): {round(cleaned_weights_min_volatility * 100, 2)}")
-    st.write(f"Maximum Sharpe Portfolio (%): {round(cleaned_weights_max_sharpe * 100, 2)}")
+    st.write(f"Minimum Volatility Portfolio (%): {st.dataframe(round(cleaned_weights_min_volatility * 100, 2))}")
+    st.write(f"Maximum Sharpe Portfolio (%): {st.dataframe(round(cleaned_weights_max_sharpe * 100, 2))}")
     
 elif display_format == "Fractions Of Capital":
-    st.write(f"Minimum Volatility Portfolio: {round(cleaned_weights_min_volatility * capital, 2)}")
-    st.write(f"Maximum Sharpe Portfolio: {round(cleaned_weights_max_sharpe * capital, 2)}")
+    st.write(f"Minimum Volatility Portfolio: {st.dataframe(round(cleaned_weights_min_volatility * capital, 2))}")
+    st.write(f"Maximum Sharpe Portfolio: {st.dataframe(round(cleaned_weights_max_sharpe * capital, 2))}")
 
 # @st.cache(suppress_st_warning=True)
