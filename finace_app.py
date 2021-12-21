@@ -253,5 +253,5 @@ if add_ticker not in st.session_state['personal_portfolio']:
   if add_ticker != "Type a stock symbol":
     st.session_state['personal_portfolio'].append(add_ticker)
     
-option = st.sidebar.selectbox('Watch List', st.session_state['personal_portfolio'])
-st.sidebar.write(option)
+# option = st.sidebar.selectbox('Watch List', )
+st.sidebar.write(st.session_state['personal_portfolio'])
