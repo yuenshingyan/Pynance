@@ -235,6 +235,9 @@ if add_ticker not in st.session_state['personal_portfolio']:
   if add_ticker != "SYMBOL":
     st.session_state['personal_portfolio'].append(add_ticker)
 
+if 'personal_portfolio' not in st.session_state:
+    st.session_state['personal_portfolio'] = []  
+    
 if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     cols_name3[0].subheader("Optimized Portfolio")
@@ -249,8 +252,7 @@ elif display_format == "Fractions Of Capital":
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
  
-if 'personal_portfolio' not in st.session_state:
-    st.session_state['personal_portfolio'] = []  
+
 
 # add_ticker = st.sidebar.text_input(label="Add To Portfolio", value="Type a stock symbol", key="add_ticker")    
     
