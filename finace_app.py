@@ -248,8 +248,7 @@ elif display_format == "Fractions Of Capital":
 if 'personal_portfolio' not in st.session_state:
     st.session_state['personal_portfolio'] = []  
 
-st.sidebar.header = "Add To Portfolio"
-add_ticker = st.sidebar.text_input(label="Please type in a stock symbol.", value="SYMBOL", key="add_ticker")    
+add_ticker = st.sidebar.text_input(label="Add To Portfolio", value="Type a stock symbol", key="add_ticker")    
     
 option = st.sidebar.selectbox('Watch List', st.session_state['personal_portfolio'])
 st.sidebar.write(option)
