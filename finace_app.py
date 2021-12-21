@@ -257,10 +257,11 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].dataframe(performance_stats)
     add_ticker = cols_name3[2].text_input(label="Please type in a stock symbol.", value="AAPL", key="add_ticker")
  
-st.session_state['personal_portfolio'].append(add_ticker)
+if add_ticker not in st.session_state['personal_portfolio']:
+  st.session_state['personal_portfolio'].append(add_ticker)
 
 option = st.selectbox(
-     'How would you like to be contacted?',
+     'Watch List',
      st.session_state['personal_portfolio'])
 
 st.write('You selected:', option)
