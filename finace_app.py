@@ -231,6 +231,10 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 
 cols_name3 = st.columns(3)
 
+if add_ticker not in st.session_state['personal_portfolio']:
+  if add_ticker != "SYMBOL":
+    st.session_state['personal_portfolio'].append(add_ticker)
+
 if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     cols_name3[0].subheader("Optimized Portfolio")
@@ -252,7 +256,3 @@ add_ticker = st.sidebar.text_input(label="Add To Portfolio", value="Type a stock
     
 option = st.sidebar.selectbox('Watch List', st.session_state['personal_portfolio'])
 st.sidebar.write(option)
-
-if add_ticker not in st.session_state['personal_portfolio']:
-  if add_ticker != "SYMBOL":
-    st.session_state['personal_portfolio'].append(add_ticker)
