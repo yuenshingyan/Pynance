@@ -29,7 +29,7 @@ one_month_ago = today - days
 start_date = st.date_input("Date Range", one_month_ago)
 end_date = st.date_input("Date Range", today)
 
-historical_price = yf.download(ticker, start="2011-12-20", end="2021-12-20")
+historical_price = yf.download(ticker, start=start_date, end=end_date)
 
 def regime_detection(historical_price, ticker):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
