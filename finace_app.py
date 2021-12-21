@@ -229,9 +229,6 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              index=['Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
-# Add Button
-# store to session
-
 cols_name3 = st.columns(3)
 
 if 'personal_portfolio' not in st.session_state:
@@ -252,7 +249,7 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].dataframe(performance_stats)
 
 st.header("Add To Portfolio")
-cols_name4 = st.columns(2)
+cols_name4 = st.columns(3)
 add_ticker = cols_name4[0].text_input(label="Please type in a stock symbol.", value="SYMBOL", key="add_ticker")
  
 if add_ticker not in st.session_state['personal_portfolio']:
@@ -260,4 +257,3 @@ if add_ticker not in st.session_state['personal_portfolio']:
     st.session_state['personal_portfolio'].append(add_ticker)
 
 option = cols_name4[1].selectbox('Watch List', st.session_state['personal_portfolio'])
-# st.write('You selected:', option)
