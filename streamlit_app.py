@@ -20,16 +20,16 @@ st.set_page_config(
 
 st.title('Stock Regime Detection APP')
 
-c1, c2, c3, c4 = st.columns((1, 1, 2, 1))
+cols_name = st.beta_columns(3)
 
-ticker = st.text_input(label="Please type in a stock symbol.", value="AAPL")
+ticker = cols_name[0].text_input(label="Please type in a stock symbol.", value="AAPL")
 
 today = date.today()
 days = datetime.timedelta(365)
 one_year_ago = today - days
 
-start_date = st.date_input("Date Range", one_year_ago)
-end_date = st.date_input("Date Range", today)
+start_date = cols_name[1].date_input("Date Range", one_year_ago)
+end_date = cols_name[2].date_input("Date Range", today)
 
 historical_price = yf.download(ticker, start=start_date, end=end_date)
 
