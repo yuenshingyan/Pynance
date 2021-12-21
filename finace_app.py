@@ -217,10 +217,16 @@ cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital,
 port_max_sharpe_capital = np.hstack([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital])
 port_max_sharpe_capital = pd.DataFrame(port_max_sharpe_capital, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
 
+performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_stats_max_sharpe], 
+             index=['Min Volatility', 'Max Sharpe'], 
+             columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
+
 if display_format == "Percentages":
     st.dataframe(port_max_sharpe_pct)
+    st.dataframe(performance_stats)
     
 elif display_format == "Fractions Of Capital":
     st.dataframe(port_max_sharpe_capital)
+    st.dataframe(performance_stats)
 
 # @st.cache(suppress_st_warning=True)
