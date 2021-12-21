@@ -236,8 +236,8 @@ if display_format == "Percentages":
     cols_name3[1].dataframe(performance_stats)
     
 elif display_format == "Fractions Of Capital":
-    st.dataframe(port_max_sharpe_capital)
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
-    st.dataframe(performance_stats)
+    cols_name3[0].dataframe(port_max_sharpe_capital)
+    cols_name3[1].dataframe(performance_stats)
 
 # @st.cache(suppress_st_warning=True)
