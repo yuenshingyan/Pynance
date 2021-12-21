@@ -3,9 +3,9 @@ import time
 import streamlit as st
 
 import math
-# from bokeh.plotting import figure, show, output_file
-# from bokeh.io import output_notebook
-# from hmmlearn import hmm
+from bokeh.plotting import figure, show, output_file
+from bokeh.io import output_notebook
+from hmmlearn import hmm
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -19,9 +19,7 @@ st.set_page_config(
 )
 
 
-st.title('My first App')
+st.title('Stock Regime Detection APP')
 
 @st.cache(suppress_st_warning=True)
-    a = st.slider("選擇一個數字", 0, 10)
-    result = a
-    st.write("結果：", result)
+st.write("Result：", 10)
