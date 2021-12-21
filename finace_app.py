@@ -214,7 +214,8 @@ port_max_sharpe_pct = pd.DataFrame(port_max_sharpe_pct, columns=["Min Volatility
 
 cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * capital, 2)
 cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
-port_max_sharpe_capital = pd.DataFrame(cleaned_weights_max_sharpe_capital, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
+port_max_sharpe_capital = np.hstack([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital])
+port_max_sharpe_capital = pd.DataFrame(port_max_sharpe_capital, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
 
 if display_format == "Percentages":
     st.dataframe(port_max_sharpe_pct)
