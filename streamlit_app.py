@@ -3,13 +3,13 @@ import time
 import streamlit as st
 
 import math
-from bokeh.plotting import figure, show, output_file
-from bokeh.io import output_notebook
-
+# from bokeh.plotting import figure, show, output_file
+# from bokeh.io import output_notebook
+# from hmmlearn import hmm
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from hmmlearn import hmm
+
 
 st.set_page_config(
     page_title="自定義網頁標題",
