@@ -120,6 +120,7 @@ def regime_detection(historical_price):
 
   p.xaxis.axis_label = 'Date'
   p.yaxis.axis_label = 'Adjusted Close Price (USD)'
+  p.add_layout(legend, 'left')
     
   return p 
 
