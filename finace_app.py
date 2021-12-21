@@ -218,7 +218,8 @@ if display_format == "Percentages":
     st.write(f"Maximum Sharpe Portfolio (%): {st.dataframe(cleaned_weights_max_sharpe_pct)}")
     
 elif display_format == "Fractions Of Capital":
-    st.write(f"Minimum Volatility Portfolio: {st.dataframe(cleaned_weights_min_volatility_capital)}")
-    st.write(f"Maximum Sharpe Portfolio: {st.dataframe(cleaned_weights_max_sharpe_capital)}")
+    st.write(f"Minimum Volatility Portfolio: "), st.write(f"Maximum Sharpe Portfolio: ")
+    st.dataframe(cleaned_weights_min_volatility_capital), {st.dataframe(cleaned_weights_max_sharpe_capital)}
+    
 
 # @st.cache(suppress_st_warning=True)
