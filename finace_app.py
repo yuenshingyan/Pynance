@@ -223,10 +223,12 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 
 if display_format == "Percentages":
     st.dataframe(port_max_sharpe_pct)
+    performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     st.dataframe(performance_stats)
     
 elif display_format == "Fractions Of Capital":
     st.dataframe(port_max_sharpe_capital)
+    performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
     st.dataframe(performance_stats)
 
 # @st.cache(suppress_st_warning=True)
