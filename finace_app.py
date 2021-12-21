@@ -232,8 +232,8 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 # get log return
 log_ret = np.log1p(acp.pct_change(1))
 
-# sub header
 # Text input
+
 # Add Button
 # store to session
 
@@ -243,14 +243,18 @@ if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     cols_name3[0].subheader("Optimized Portfolio")
     cols_name3[1].subheader("Performance Stats")
+    cols_name3[2].subheader("Create A Porfoliio")
+    
     cols_name3[0].dataframe(port_max_sharpe_pct)
     cols_name3[1].dataframe(performance_stats)
-    cols_name3[2].bar_chart(log_ret.iloc[-1])
+    cols_name[2].text_input(label="Please type in a stock symbol.", value="")
     
 elif display_format == "Fractions Of Capital":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
     cols_name3[0].subheader("Optimized Portfolio")
     cols_name3[1].subheader("Performance Stats")
+    cols_name3[2].subheader("Create A Porfoliio")
+    
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
-    cols_name3[2].bar_chart(log_ret.iloc[-1])
+    cols_name[2].text_input(label="Please type in a stock symbol.", value="")
