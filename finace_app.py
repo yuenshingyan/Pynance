@@ -257,3 +257,8 @@ if add_ticker not in st.session_state['personal_portfolio']:
     st.session_state['personal_portfolio'].append(add_ticker)
 
 option = cols_name4[1].selectbox('Watch List', st.session_state['personal_portfolio'])
+
+add_selectbox = st.sidebar.selectbox(
+    "How would you like to be contacted?",
+    ("Email", "Home phone", "Mobile phone")
+)
