@@ -23,7 +23,7 @@ ticker = st.text_input(label="Please type in a stock symbol.", value="AAPL")
 
 historical_price = yf.download(ticker, start="2011-12-20", end="2021-12-20")
 
-def regime_detection(historical_price):
+def regime_detection(historical_price, ticker):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -54,7 +54,7 @@ def regime_detection(historical_price):
 
   TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
-  title = "AAPL" + ' Chart'
+  title = ticker + ' Historical Price'
 
   p = figure(x_axis_type="datetime", tools=TOOLS, plot_width=1300, title = title)
 
