@@ -28,8 +28,8 @@ today = date.today()
 days = datetime.timedelta(365)
 one_year_ago = today - days
 
-start_date = cols_name[1].date_input("Date Range", one_year_ago)
-end_date = cols_name[2].date_input("Date Range", today)
+start_date = cols_name[1].date_input("From", one_year_ago)
+end_date = cols_name[2].date_input("To", today)
 
 historical_price = yf.download(ticker, start=start_date, end=end_date)
 
