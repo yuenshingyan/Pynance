@@ -199,7 +199,7 @@ start_date_port_opt = cols_name2[1].date_input("From", one_year_ago, key="port_o
 end_date_port_opt = cols_name2[2].date_input("To", today, key="port_opt")
 capital = st.number_input('Insert your capital')
 
-acp = get_adj_close_prices(tickers.split(), start_date, end_date)
+acp = get_adj_close_prices(tickers.split(","), start_date, end_date)
 cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
 
 display_format = st.radio(
@@ -209,11 +209,12 @@ display_format = st.radio(
 # Rounding
 cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
 cleaned_weights_max_sharpe_pct = round(cleaned_weights_max_sharpe * 100, 2)
-port_max_sharpe_pct = pd.concat([cleaned_weights_min_volatility_pct, cleaned_weights_max_sharpe_pct])
+port_max_sharpe_pct = np.hstack([cleaned_weights_min_volatility_pct, cleaned_weights_max_sharpe_pct])
+port_max_sharpe_pct = pd.DataFrame(port_max_sharpe_pct, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
 
 cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * capital, 2)
 cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
-port_max_sharpe_capital = pd.concat([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital])
+port_max_sharpe_capital = pd.DataFrame(cleaned_weights_max_sharpe_capital, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
 
 if display_format == "Percentages":
     st.dataframe(port_max_sharpe_pct)
