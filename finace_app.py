@@ -214,10 +214,10 @@ cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * 
 cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
 
 if display_format == "Percentages":
-    st.dataframe(cleaned_weights_min_volatility_pct), {st.dataframe(cleaned_weights_max_sharpe_pct)}
+    st.dataframe(cleaned_weights_min_volatility_pct), st.dataframe(cleaned_weights_max_sharpe_pct)
     
 elif display_format == "Fractions Of Capital":
-    st.dataframe(cleaned_weights_min_volatility_capital), {st.dataframe(cleaned_weights_max_sharpe_capital)}
+    st.dataframe(cleaned_weights_min_volatility_capital), st.dataframe(cleaned_weights_max_sharpe_capital)
     
 
 # @st.cache(suppress_st_warning=True)
