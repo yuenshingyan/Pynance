@@ -176,7 +176,7 @@ st.set_page_config(
 
 st.title('Stock Regime Detection APP')
 
-cols_name = st.columns(3)
+cols_name = st.columns(3, key="close_price")
 
 ticker = cols_name[0].text_input(label="Please type in a stock symbol.", value="AAPL")
 
@@ -192,7 +192,7 @@ historical_price = yf.download(ticker, start=start_date, end=end_date)
 p = regime_detection(historical_price, ticker)
 st.bokeh_chart(p, use_container_width=True)
 
-cols_name2 = st.columns(4)
+cols_name2 = st.columns(4, key="port_opt")
 default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
 tickers = cols_name2[0].text_input(label="Please type in a portfolio", value=default_tickers)
 start_date_port_opt = cols_name2[1].date_input("From", one_year_ago)
