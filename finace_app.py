@@ -11,27 +11,60 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-st.set_page_config(
-    page_title="Stock Regime Detection APP",
-    page_icon="📈",
-    layout="wide",
-    initial_sidebar_state="collapsed",
-)
+from pypfopt import EfficientFrontier
+from pypfopt import risk_models
+from pypfopt import expected_returns
 
-st.title('Stock Regime Detection APP')
+def get_datetime(past_days=365):
+  today = date.today()
+  days = datetime.timedelta(past_days)
+  one_year_ago = today - days
 
-cols_name = st.columns(3)
+  return str(one_year_ago), str(today)
 
-ticker = cols_name[0].text_input(label="Please type in a stock symbol.", value="AAPL")
+# Adjusted Close Prices
+def get_adj_close_prices(ticks, one_year_ago, today):
+  close_prices = {}
+  for t in ticks:
+    close_prices[t] = yf.download(t, start=one_year_ago, end=today)['Adj Close']
 
-today = date.today()
-days = datetime.timedelta(365)
-one_year_ago = today - days
+  close_prices = pd.DataFrame(close_prices)
 
-start_date = cols_name[1].date_input("From", one_year_ago)
-end_date = cols_name[2].date_input("To", today)
+  return close_prices
 
-historical_price = yf.download(ticker, start=start_date, end=end_date)
+def port_opt(acp):
+  # Calculate expected returns and sample covariance
+  mu = expected_returns.mean_historical_return(acp)
+  S = risk_models.sample_cov(acp)
+
+  # Optimize for maximal Sharpe ratio
+  ef_min_volatility = EfficientFrontier(mu, S)
+  ef_max_sharpe = EfficientFrontier(mu, S)
+
+  # Set Constriants
+  raw_weights_min_volatility = ef_min_volatility.min_volatility()
+  raw_weights_max_sharpe = ef_max_sharpe.max_sharpe()
+
+  # Store weights
+  cleaned_weights_min_volatility = ef_min_volatility.clean_weights()
+  cleaned_weights_max_sharpe = ef_max_sharpe.clean_weights()
+
+  # Turn Weights Into Pandas Dataframes
+  cleaned_weights_min_volatility = pd.DataFrame(
+      cleaned_weights_min_volatility.values(), 
+      index=cleaned_weights_min_volatility, 
+      columns=['Buy'])
+  
+  cleaned_weights_max_sharpe = pd.DataFrame(
+      cleaned_weights_max_sharpe.values(), 
+      index=cleaned_weights_max_sharpe, 
+      columns=['Buy'])
+
+  # Store Performance Stats
+  performance_stats_min_volatility = ef_min_volatility.portfolio_performance()
+  performance_stats_max_sharpe = ef_max_sharpe.portfolio_performance()
+
+  return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
 def regime_detection(historical_price, ticker):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
@@ -134,7 +167,51 @@ def regime_detection(historical_price, ticker):
     
   return p 
 
+st.set_page_config(
+    page_title="Stock Regime Detection APP",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
+
+st.title('Stock Regime Detection APP')
+
+cols_name = st.columns(3)
+
+ticker = cols_name[0].text_input(label="Please type in a stock symbol.", value="AAPL")
+
+today = date.today()
+days = datetime.timedelta(365)
+one_year_ago = today - days
+
+start_date = cols_name[1].date_input("From", one_year_ago)
+end_date = cols_name[2].date_input("To", today)
+
+historical_price = yf.download(ticker, start=start_date, end=end_date)
+
 p = regime_detection(historical_price, ticker)
 st.bokeh_chart(p, use_container_width=True)
+
+cols_name2 = st.columns(4)
+default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
+tickers = cols_name2[0].input_text(label="Please type in a portfolio", value=default_tickers)
+start_date_port_opt = cols_name[1].date_input("From", one_year_ago)
+end_date_port_opt = cols_name[2].date_input("To", today)
+capital = st.number_input('Insert your capital')
+
+acp = get_adj_close_prices(input_str.split(), start_date, end_date)
+cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
+
+display_format = st.radio(
+     "",
+     ('Percentages', 'Fractions Of Capital'))
+
+if display_format == "Percentages":
+    st.write(f"Minimum Volatility Portfolio (%): {round(cleaned_weights_min_volatility * 100, 2)}")
+    st.write(f"Maximum Sharpe Portfolio (%): {round(cleaned_weights_max_sharpe * 100, 2)}")
+    
+elif display_format == "Fractions Of Capital":
+    st.write(f"Minimum Volatility Portfolio: {round(cleaned_weights_min_volatility * capital, 2)}")
+    st.write(f"Maximum Sharpe Portfolio: {round(cleaned_weights_max_sharpe * capital, 2)}")
 
 # @st.cache(suppress_st_warning=True)
