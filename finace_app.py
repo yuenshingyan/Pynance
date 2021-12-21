@@ -214,7 +214,7 @@ cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * 
 cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
 
 if display_format == "Percentages":
-    st.write(f"Minimum Volatility Portfolio (%): {st.table(cleaned_weights_min_volatility_pct)}")
+    st.write(f"Minimum Volatility Portfolio (%): {st.dataframe(cleaned_weights_min_volatility_pct)}")
     st.write(f"Maximum Sharpe Portfolio (%): {st.dataframe(cleaned_weights_max_sharpe_pct)}")
     
 elif display_format == "Fractions Of Capital":
