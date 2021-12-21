@@ -209,11 +209,11 @@ display_format = st.radio(
 # Rounding
 cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
 cleaned_weights_max_sharpe_pct = round(cleaned_weights_max_sharpe * 100, 2)
-port_max_sharpe_pct = pd.concat([cleaned_weights_min_volatility_pct, cleaned_weights_max_sharpe_pct)
+port_max_sharpe_pct = pd.concat([cleaned_weights_min_volatility_pct, cleaned_weights_max_sharpe_pct])
 
 cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * capital, 2)
 cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
-port_max_sharpe_capital = pd.concat([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital)
+port_max_sharpe_capital = pd.concat([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital])
 
 if display_format == "Percentages":
     st.dataframe(port_max_sharpe_pct)
