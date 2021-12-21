@@ -258,5 +258,4 @@ elif display_format == "Fractions Of Capital":
     add_ticker = cols_name3[2].text_input(label="Please type in a stock symbol.", value="AAPL", key="add_ticker")
  
 st.session_state['personal_portfolio'].append(add_ticker)
-
 st.write(st.session_state['personal_portfolio'])
