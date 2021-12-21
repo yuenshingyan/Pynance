@@ -22,6 +22,6 @@ st.set_page_config(
 st.title('My first App')
 
 @st.cache(suppress_st_warning=True)
-a = st.slider("選擇一個數字", 0, 10)
-result = a
-st.write("結果：", result)
+    a = st.slider("選擇一個數字", 0, 10)
+    result = a
+    st.write("結果：", result)
