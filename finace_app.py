@@ -229,9 +229,6 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              index=['Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
-# get log return
-log_ret = np.log1p(acp.pct_change(1))
-
 # Text input
 
 # Add Button
@@ -247,7 +244,7 @@ if display_format == "Percentages":
     
     cols_name3[0].dataframe(port_max_sharpe_pct)
     cols_name3[1].dataframe(performance_stats)
-    cols_name[2].text_input(label="Please type in a stock symbol.", value="")
+    cols_name[2].text_input(label="Please type in a stock symbol.", value="AAPL")
     
 elif display_format == "Fractions Of Capital":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
@@ -257,4 +254,4 @@ elif display_format == "Fractions Of Capital":
     
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
-    cols_name[2].text_input(label="Please type in a stock symbol.", value="")
+    cols_name[2].text_input(label="Please type in a stock symbol.", value="AAPL")
