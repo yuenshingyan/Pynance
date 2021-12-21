@@ -20,7 +20,7 @@ st.set_page_config(
 
 st.title('Stock Regime Detection APP')
 
-cols_name = st.beta_columns(3)
+cols_name = st.columns(3)
 
 ticker = cols_name[0].text_input(label="Please type in a stock symbol.", value="AAPL")
 
