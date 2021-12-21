@@ -239,7 +239,7 @@ if display_format == "Percentages":
     cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_pct)
     cols_name3[1].dataframe(performance_stats)
-    cols_name3[2].bar_chart(log_ret.iloc[-2])
+    cols_name3[2].bar_chart(log_ret.iloc[-2].T)
     
 elif display_format == "Fractions Of Capital":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
@@ -247,4 +247,4 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
-    cols_name3[2].bar_chart(log_ret.iloc[-2])
+    cols_name3[2].bar_chart(log_ret.iloc[-2].T)
