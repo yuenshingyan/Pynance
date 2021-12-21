@@ -1,3 +1,4 @@
+# Import Dependencies
 import time
 from datetime import date
 import datetime
@@ -15,6 +16,7 @@ from pypfopt import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
 
+# Helper Functions
 def get_datetime(past_days=365):
   today = date.today()
   days = datetime.timedelta(past_days)
@@ -174,8 +176,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-st.title('Stock Regime Detection APP')
+# Main
+st.title('Finance APP')
 
+# Regime Detection 
+st.header("Regime Detection")
 cols_name = st.columns(3)
 
 ticker = cols_name[0].text_input(label="Please type in a stock symbol.", value="AAPL")
@@ -192,6 +197,8 @@ historical_price = yf.download(ticker, start=start_date, end=end_date)
 p = regime_detection(historical_price, ticker)
 st.bokeh_chart(p, use_container_width=True)
 
+# Portfolio Optimization
+st.header("Portfolio Optimization")
 cols_name2 = st.columns(4)
 default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
 tickers = cols_name2[0].text_input(label="Please type in a portfolio", value=default_tickers)
