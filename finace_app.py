@@ -260,10 +260,5 @@ if add_ticker not in st.session_state['personal_portfolio']:
   if add_ticker != "SYMBOL":
     st.session_state['personal_portfolio'].append(add_ticker)
 
-option = st.selectbox(
-     'Watch List',
-     st.session_state['personal_portfolio'])
-
-
-
+option = st.selectbox('Watch List',st.session_state['personal_portfolio'])
 cols_name4[1].write('You selected:', option)
