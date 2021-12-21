@@ -119,7 +119,7 @@ def regime_detection(historical_price, ticker):
         legend_label="Low Volatility (Dec)")
 
   p.xaxis.axis_label = 'Date'
-  p.yaxis.axis_label = 'Adjusted Close Price (USD)'
+  p.yaxis.axis_label = 'Price (USD)'
   p.add_layout(p.legend[0], 'left')
     
   return p 
