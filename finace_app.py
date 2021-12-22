@@ -257,8 +257,8 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 if 'Watchlist' not in st.session_state:
     st.session_state['Watchlist'] = {} 
     
-col_names3 = st.columns(3)    
-display_format = col_names3[2].radio("", ('Percentages', 'Fractions Of Capital'))    
+cols_name3 = st.columns(3)    
+display_format = cols_name3[2].radio("", ('Percentages', 'Fractions Of Capital'))    
 
 if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
