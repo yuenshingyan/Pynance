@@ -258,6 +258,7 @@ if 'Watchlist' not in st.session_state:
     st.session_state['Watchlist'] = {} 
     
 cols_name3 = st.columns(3)    
+cols_name3[2].subheader("Display Format")
 display_format = cols_name3[2].radio("", ('Percentages', 'Fractions Of Capital'))    
 
 if display_format == "Percentages":
@@ -276,7 +277,7 @@ elif display_format == "Fractions Of Capital":
     
 # Value At Risk
 cols_name4 = st.columns(2)
-choose_condidence_lvl = cols_name4[1].slider("Confidence Level", .05)
+choose_condidence_lvl = st.slider("Confidence Level", .05)
 value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
 
 investing_period = end_date_port_opt - start_date_port_opt
