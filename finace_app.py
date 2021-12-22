@@ -191,7 +191,7 @@ def var(ret, initial_investment, conf_level=.05):
   cutoff1 = norm.ppf(conf_level, mean_investment, stdev_investment)
   var_1d1 = initial_investment - cutoff1
   
-  return var_1d1
+  return var_1d1[0][0]
 
 st.set_page_config(
     page_title="Pynance",
@@ -279,9 +279,10 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
-    
+
+investing_period = end_date_port_opt - start_date_port_opt    
 cols_name3[2].subheader("Value At Risk")    
-cols_name3[2].write(value_at_risk)
+cols_name3[2].write(f"95% confidence that our portfolio of ${capital} will not exceed losses greater than ${value_at_risk} over a {investing_period} day period.")
  
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
@@ -293,7 +294,7 @@ if add_ticker not in st.session_state['Watchlist']:
     
 else:
   st.session_state['Watchlist'].pop(add_ticker)
-    
+  
 st.sidebar.text('Watchlist\n')
 watchlist_str = "\n".join(["\t" + ticker + "\t" + str(ret) + "%" for ticker, ret in st.session_state['Watchlist'].items()])
 st.sidebar.text(watchlist_str)
