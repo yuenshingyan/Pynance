@@ -254,8 +254,6 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              index=['Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
-value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
-
 cols_name3 = st.columns(3)
 
 if 'Watchlist' not in st.session_state:
@@ -278,13 +276,15 @@ elif display_format == "Fractions Of Capital":
 display_format = col_names3[2].radio("", ('Percentages', 'Fractions Of Capital'))
 
 # Value At Risk
+choose_condidence_lvl = col_names4[1].slider("Confidence Level", .05)
+value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
 cols_name4 = st.columns(2)
 
 investing_period = end_date_port_opt - start_date_port_opt
 cols_name4[0].subheader("Value At Risk") 
 cols_name4[0].write(f"{choose_condidence_lvl * 100}% confidence that our portfolio of ${capital} will not exceed losses greater than ${round(value_at_risk, 2)} over a {investing_period.days} day period.")
-choose_condidence_lvl = col_names4[1].slider("Confidence Level", .05)
 
+# Side Bar
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
   if add_ticker != "Type a stock symbol":
