@@ -254,12 +254,12 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              index=['Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
-cols_name3 = st.columns(3)
-
 if 'Watchlist' not in st.session_state:
     st.session_state['Watchlist'] = {} 
     
+cols_name3 = st.columns(3)    
 display_format = col_names3[2].radio("", ('Percentages', 'Fractions Of Capital'))    
+
 if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     cols_name3[0].subheader("Optimized Portfolio")
@@ -274,8 +274,6 @@ elif display_format == "Fractions Of Capital":
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
     
-
-
 # Value At Risk
 choose_condidence_lvl = col_names4[1].slider("Confidence Level", .05)
 value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
