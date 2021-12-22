@@ -151,8 +151,8 @@ def regime_detection(historical_price, ticker):
         w, 
         close_low_volatility["Open"][inc_low_volatility], 
         close_low_volatility["Adj Close"][inc_low_volatility], 
-        fill_color="#D5E1DD",
-        line_color="#D5E1DD", 
+        fill_color="#99FFCC",
+        line_color="#99FFCC", 
         line_width=0.1, 
         legend_label="Low Volatility (Inc)")
   
