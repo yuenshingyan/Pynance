@@ -225,8 +225,7 @@ capital = cols_name2[3].number_input('Capital', value=10000)
 
 for t in tickers.split(","):
   if ticker.isupper() and len(ticker) <= 5:
-    
-  acp = get_adj_close_prices(tickers.split(","), start_date, end_date)
+    acp = get_adj_close_prices(tickers.split(","), start_date, end_date)
   
 cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
 
