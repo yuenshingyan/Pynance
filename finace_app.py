@@ -273,4 +273,4 @@ else:
   st.session_state['Watchlist'].pop(add_ticker)
     
 st.sidebar.text('Watchlist\n')
-st.sidebar.text("\n".join(st.session_state['Watchlist']))
+st.sidebar.text("\n".join([ticker + "\t" + ret for ticker, ret in st.session_state['Watchlist']).items()])
