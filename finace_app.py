@@ -18,6 +18,8 @@ from pypfopt import expected_returns
 
 from matplotlib import pyplot
 
+from scipy.stats import norm
+
 # Helper Functions
 def get_datetime(past_days=365):
   today = date.today()
