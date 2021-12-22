@@ -167,7 +167,7 @@ def regime_detection(historical_price, ticker):
 
   p.xaxis.axis_label = 'Date'
   p.yaxis.axis_label = 'Price (USD)'
-  p.add_layout(p.legend[0], 'left')
+  p.legend.location = "top_left"
     
   return p 
 
