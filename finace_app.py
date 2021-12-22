@@ -264,7 +264,7 @@ elif display_format == "Fractions Of Capital":
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
   if add_ticker != "Type a stock symbol":
-    days = datetime.timedelta(1)
+    days = datetime.timedelta(2)
     three_day_ago = today - days
     close_prices = yf.download(add_ticker, start=three_day_ago, end=today)['Adj Close']
     st.session_state['Watchlist'][add_ticker] = close_prices.pct_change(-1).dropna()[-1]
