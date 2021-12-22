@@ -277,8 +277,9 @@ st.sidebar.text('Watchlist\n')
 for t, r in st.session_state['Watchlist'].items():
   watchlist_str = t + "\t" + str(r) + "%\n"
   if r > 0:
-    color = st.color_picker('Pick A Color', '#99FFCC')
+    #color = st.color_picker('Pick A Color', '#99FFCC')
+    st.sidebar.text(watchlist_str, "#99FFCC")
   elif r < 0:
-    color = st.color_picker('Pick A Color', '#F2583E')
-    
-  st.sidebar.text(watchlist_str, color)
+    #color = st.color_picker('Pick A Color', '#F2583E')
+    st.sidebar.text(watchlist_str, "#F2583E")
+  
