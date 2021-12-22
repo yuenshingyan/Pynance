@@ -276,7 +276,6 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].dataframe(performance_stats)
     
 # Value At Risk
-choose_condidence_lvl = st.slider("Confidence Level", .05)
 cols_name4 = st.columns(2)
 
 value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
@@ -285,8 +284,10 @@ investing_period = end_date_port_opt - start_date_port_opt
 cols_name4[0].subheader("Value At Risk") 
 cols_name4[0].write(f"{choose_condidence_lvl * 100}% confidence that our portfolio of ${capital} will not exceed losses greater than ${round(value_at_risk, 2)} over a {investing_period.days} day period.")
 
+# Conditional Value At Risk
 cols_name4[1].subheader("Conditional Value At Risk") 
 
+choose_condidence_lvl = st.slider("Confidence Level", .05)
 
 # Side Bar
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
