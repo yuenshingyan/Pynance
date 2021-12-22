@@ -176,19 +176,20 @@ def regime_detection(historical_price, ticker):
     
   return p 
 
-def sidebar_plot(adj_price):
-  if adj_price.iloc[-1] > adj_price.iloc[0]:
-    color = "Green"
+def var(ret, initial_investment, conf_level=.05):
+  cov_matrix = ret.cov()
+  avg_return = ret.mean()
 
-  elif adj_price.iloc[-1] < adj_price.iloc[0]:
-    color = "Red"
+  port_mean = avg_return.dot(cleaned_weights_min_volatility)
+  port_stdev = np.sqrt(cleaned_weights_min_volatility.T.dot(cov_matrix).dot(cleaned_weights_min_volatility))
 
-  fig, ax = pyplot.subplots(figsize=(.1, .1))
-  ax.get_xaxis().set_visible(False)
-  ax.get_yaxis().set_visible(False)
-  ax.plot(adj_price, color=color)
+  mean_investment = (1 + port_mean) * initial_investment
+  stdev_investment = initial_investment * port_stdev
 
-  return fig
+  cutoff1 = norm.ppf(conf_level, mean_investment, stdev_investment)
+  var_1d1 = initial_investment - cutoff1
+  
+  return var_1d1
 
 st.set_page_config(
     page_title="Pynance",
@@ -236,7 +237,10 @@ if warning != []:
 
 cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
 
-display_format = st.radio("", ('Percentages', 'Fractions Of Capital'))
+col_names5 = st.columns(2)
+
+display_format = col_names5[0].radio("", ('Percentages', 'Fractions Of Capital'))
+chose_condidence_lvl = col_names5[1].slider("Confidence Level", .05)
 
 # Rounding
 cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
@@ -253,6 +257,8 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              index=['Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
+value_at_risk = var(acp.pct_change(-1).dropna(), capital, chose_condidence_lvl)
+
 cols_name3 = st.columns(3)
 
 if 'Watchlist' not in st.session_state:
@@ -262,8 +268,10 @@ if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     cols_name3[0].subheader("Optimized Portfolio")
     cols_name3[1].subheader("Performance Stats")
+    cols_name3[1].subheader("Value At Risk")
     cols_name3[0].dataframe(port_max_sharpe_pct)
     cols_name3[1].dataframe(performance_stats)
+    cols_name3[1].write()
     
 elif display_format == "Fractions Of Capital":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
