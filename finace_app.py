@@ -267,7 +267,7 @@ if add_ticker not in st.session_state['Watchlist']:
     days = datetime.timedelta(2)
     three_day_ago = today - days
     close_prices = yf.download(add_ticker, start=three_day_ago, end=today)['Adj Close']
-    st.session_state['Watchlist'][add_ticker] = close_prices.pct_change(-1).dropna()[-1]
+    st.session_state['Watchlist'][add_ticker] = round(close_prices.pct_change(-1).dropna()[-1] * 100, 2)
     
 else:
   st.session_state['Watchlist'].pop(add_ticker)
