@@ -245,7 +245,7 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 cols_name3 = st.columns(3)
 
 if 'Watchlist' not in st.session_state:
-    st.session_state['Watchlist'] = []  
+    st.session_state['Watchlist'] = {} 
     
 if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
@@ -264,19 +264,13 @@ elif display_format == "Fractions Of Capital":
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
   if add_ticker != "Type a stock symbol":
-    st.session_state['Watchlist'].append(add_ticker)
+    days = datetime.timedelta(1)
+    two_day_ago = today - days
+    close_prices = yf.download(add_ticker, start=two_day_ago, end=today)['Adj Close']
+    st.session_state['Watchlist'][add_ticker] = close_prices.pct_change(-1)[-1]
     
 else:
-  st.session_state['Watchlist'].remove(add_ticker)
+  st.session_state['Watchlist'].pop(add_ticker)
     
 st.sidebar.text('Watchlist\n')
 st.sidebar.text("\n".join(st.session_state['Watchlist']))
-
-
-# for i in range(len(st.session_state['Watchlist'])):
-#   t_close = yf.download(st.session_state['Watchlist'][i], start="2020-12-20", end="2021-12-20")['Adj Close']
-#   with st.columns(2)[0]:
-#     st.session_state['Watchlist'][i]
-    
-#   with st.columns(2)[1]:
-#     st.sidebar.pyplot(sidebar_plot(t_close))
