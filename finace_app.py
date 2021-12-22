@@ -239,11 +239,6 @@ if warning != []:
 
 cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
 
-col_names5 = st.columns(2)
-
-display_format = col_names5[0].radio("", ('Percentages', 'Fractions Of Capital'))
-choose_condidence_lvl = col_names5[1].slider("Confidence Level", .05)
-
 # Rounding
 cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
 cleaned_weights_max_sharpe_pct = round(cleaned_weights_max_sharpe * 100, 2)
@@ -279,12 +274,17 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
+    
+display_format = col_names3[2].radio("", ('Percentages', 'Fractions Of Capital'))
+
+# Value At Risk
+cols_name4 = st.columns(2)
 
 investing_period = end_date_port_opt - start_date_port_opt
-cols_name3[2].subheader("Value At Risk") 
+cols_name4[0].subheader("Value At Risk") 
+cols_name4[0].write(f"{choose_condidence_lvl * 100}% confidence that our portfolio of ${capital} will not exceed losses greater than ${round(value_at_risk, 2)} over a {investing_period.days} day period.")
+choose_condidence_lvl = col_names4[1].slider("Confidence Level", .05)
 
-cols_name3[2].write(f"{choose_condidence_lvl * 100}% confidence that our portfolio of ${capital} will not exceed losses greater than ${value_at_risk} over a {investing_period.days} day period.")
- 
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
   if add_ticker != "Type a stock symbol":
