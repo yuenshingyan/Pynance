@@ -275,9 +275,9 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].dataframe(performance_stats)
     
 # Value At Risk
-choose_condidence_lvl = col_names4[1].slider("Confidence Level", .05)
-value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
 cols_name4 = st.columns(2)
+choose_condidence_lvl = cols_name4[1].slider("Confidence Level", .05)
+value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
 
 investing_period = end_date_port_opt - start_date_port_opt
 cols_name4[0].subheader("Value At Risk") 
