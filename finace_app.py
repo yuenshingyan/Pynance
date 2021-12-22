@@ -132,8 +132,8 @@ def regime_detection(historical_price, ticker):
         w, 
         close_high_volatility["Open"][dec_high_volatility], 
         close_high_volatility["Adj Close"][dec_high_volatility], 
-        fill_color="#49C9FF",
-        line_color="#49C9FF", 
+        fill_color="#368EF3",
+        line_color="#368EF3", 
         line_width=0.1, 
         legend_label="High Volatility (Dec)")
   
