@@ -273,6 +273,6 @@ else:
   st.session_state['Watchlist'].pop(add_ticker)
     
 st.sidebar.text('Watchlist\n')
-Watchlist_str = "\n".join(["\t" + ticker + "\t" + str(ret) + "%" for ticker, ret in st.session_state['Watchlist'].items()])
+watchlist_str = "\n".join(["\t" + ticker + "\t" + str(ret) + "%" for ticker, ret in st.session_state['Watchlist'].items()])
 st.sidebar.text(watchlist_str)
   
