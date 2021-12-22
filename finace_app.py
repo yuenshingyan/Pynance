@@ -259,6 +259,7 @@ cols_name3 = st.columns(3)
 if 'Watchlist' not in st.session_state:
     st.session_state['Watchlist'] = {} 
     
+display_format = col_names3[2].radio("", ('Percentages', 'Fractions Of Capital'))    
 if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     cols_name3[0].subheader("Optimized Portfolio")
@@ -273,7 +274,7 @@ elif display_format == "Fractions Of Capital":
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
     
-display_format = col_names3[2].radio("", ('Percentages', 'Fractions Of Capital'))
+
 
 # Value At Risk
 choose_condidence_lvl = col_names4[1].slider("Confidence Level", .05)
