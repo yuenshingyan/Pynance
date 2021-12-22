@@ -242,7 +242,7 @@ cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_mi
 col_names5 = st.columns(2)
 
 display_format = col_names5[0].radio("", ('Percentages', 'Fractions Of Capital'))
-chose_condidence_lvl = col_names5[1].slider("Confidence Level", .05)
+choose_condidence_lvl = col_names5[1].slider("Confidence Level", .05)
 
 # Rounding
 cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
@@ -259,7 +259,7 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              index=['Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
-value_at_risk = var(acp.pct_change(-1).dropna(), capital, chose_condidence_lvl)
+value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
 
 cols_name3 = st.columns(3)
 
@@ -280,9 +280,10 @@ elif display_format == "Fractions Of Capital":
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
 
-investing_period = end_date_port_opt - start_date_port_opt    
+investing_period = end_date_port_opt - start_date_port_opt  
+investing_period = investing_period.strftime("%d")
 cols_name3[2].subheader("Value At Risk")    
-cols_name3[2].write(f"95% confidence that our portfolio of ${capital} will not exceed losses greater than ${value_at_risk} over a {investing_period} day period.")
+cols_name3[2].write(f"{choose_condidence_lvl * 100}% confidence that our portfolio of ${capital} will not exceed losses greater than ${value_at_risk} over a {investing_period} day period.")
  
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
@@ -298,4 +299,3 @@ else:
 st.sidebar.text('Watchlist\n')
 watchlist_str = "\n".join(["\t" + ticker + "\t" + str(ret) + "%" for ticker, ret in st.session_state['Watchlist'].items()])
 st.sidebar.text(watchlist_str)
-  
