@@ -282,8 +282,9 @@ elif display_format == "Fractions Of Capital":
 
 investing_period = end_date_port_opt - start_date_port_opt  
 investing_period = investing_period.strftime("%d")
-cols_name3[2].subheader("Value At Risk")    
-cols_name3[2].write(f"{choose_condidence_lvl * 100}% confidence that our portfolio of ${capital} will not exceed losses greater than ${value_at_risk} over a {investing_period} day period.")
+cols_name3[2].subheader("Value At Risk") 
+cols_name3[2].write(type(investing_period))
+#cols_name3[2].write(f"{choose_condidence_lvl * 100}% confidence that our portfolio of ${capital} will not exceed losses greater than ${value_at_risk} over a {investing_period} day period.")
  
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
