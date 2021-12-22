@@ -232,7 +232,7 @@ capital = cols_name2[3].number_input('Capital', value=10000)
 acp, warning = get_adj_close_prices(tickers.split(","), start_date, end_date)
 
 if warning != []:
-  st.write(f"Ticker: {" ".join(warning)} cannot be found.")
+  st.write(f"Ticker: {' '.join(warning)} cannot be found.")
 
 cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
 
