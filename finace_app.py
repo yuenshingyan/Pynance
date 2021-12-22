@@ -273,5 +273,12 @@ else:
   st.session_state['Watchlist'].pop(add_ticker)
     
 st.sidebar.text('Watchlist\n')
-watchlist_str = "\n".join(["\t" + ticker + "\t" + str(ret) + "%" for ticker, ret in st.session_state['Watchlist'].items()])
-st.sidebar.text(watchlist_str)
+#watchlist_str = "\n".join(["\t" + ticker + "\t" + str(ret) + "%" for ticker, ret in st.session_state['Watchlist'].items()])
+for t, r in st.session_state['Watchlist'].items():
+  watchlist_str = t + "\t" + str(r) + "%\n"
+  if r > 0:
+    color = st.color_picker('Pick A Color', '#99FFCC')
+  elif r < 0:
+    color = st.color_picker('Pick A Color', '#F2583E')
+    
+  st.sidebar.text(watchlist_str, color)
