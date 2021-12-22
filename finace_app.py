@@ -30,12 +30,17 @@ def get_datetime(past_days=365):
 @st.cache(suppress_st_warning=True)
 def get_adj_close_prices(ticks, one_year_ago, today):
   close_prices = {}
+  warning = []
   for t in ticks:
-    close_prices[t] = yf.download(t, start=one_year_ago, end=today)['Adj Close']
+    try:
+      close_prices[t] = yf.download(t, start=one_year_ago, end=today)['Adj Close']
+      
+    except:
+      warning.append(t) 
 
   close_prices = pd.DataFrame(close_prices)
 
-  return close_prices
+  return close_prices, warning
 
 def port_opt(acp):
   # Calculate expected returns and sample covariance
@@ -224,8 +229,11 @@ end_date_port_opt = cols_name2[2].date_input("To", today, key="port_opt")
 capital = cols_name2[3].number_input('Capital', value=10000)
 
 
-acp = get_adj_close_prices(tickers.split(","), start_date, end_date)
-  
+acp, warning = get_adj_close_prices(tickers.split(","), start_date, end_date)
+
+if warning != []:
+  st.write(f"Ticker: {" ".join(warning)} cannot be found.")
+
 cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
 
 display_format = st.radio("", ('Percentages', 'Fractions Of Capital'))
