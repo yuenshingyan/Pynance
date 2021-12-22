@@ -278,11 +278,10 @@ elif display_format == "Fractions Of Capital":
 # Value At Risk
 cols_name4 = st.columns(2)
 
-value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
-
 investing_period = end_date_port_opt - start_date_port_opt
 cols_name4[0].subheader("Value At Risk") 
 choose_condidence_lvl = st.slider("Confidence Level", .05)
+value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
 cols_name4[0].write(f"{choose_condidence_lvl * 100}% confidence that our portfolio of ${capital} will not exceed losses greater than ${round(value_at_risk, 2)} over a {investing_period.days} day period.")
 
 # Conditional Value At Risk
