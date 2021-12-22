@@ -270,10 +270,8 @@ if display_format == "Percentages":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
     cols_name3[0].subheader("Optimized Portfolio")
     cols_name3[1].subheader("Performance Stats")
-    cols_name3[1].subheader("Value At Risk")
     cols_name3[0].dataframe(port_max_sharpe_pct)
     cols_name3[1].dataframe(performance_stats)
-    cols_name3[1].write()
     
 elif display_format == "Fractions Of Capital":
     performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
@@ -281,6 +279,9 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].subheader("Performance Stats")
     cols_name3[0].dataframe(port_max_sharpe_capital)
     cols_name3[1].dataframe(performance_stats)
+    
+cols_name3[2].subheader("Value At Risk")    
+cols_name3[2].write(value_at_risk)
  
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
