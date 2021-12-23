@@ -102,7 +102,7 @@ def regime_detection(historical_price, ticker):
 
   returns_high_volatility[:] = np.nan
   returns_low_volatility[:] = np.nan
-  
+  print(log_ret.dropna()[Z == 1])
   if max(log_ret.dropna()[Z == 1]) > max(log_ret.dropna()[Z == 0]):
     returns_high_volatility[Z == 1] = log_ret.dropna()[Z == 1]
     returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
