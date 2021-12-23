@@ -215,7 +215,7 @@ end_date = cols_name[2].date_input("To", today)
 
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
-  if len(historical_price) > 0:
+  if len(historical_price) > 1:
     p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, ticker)
     st.bokeh_chart(p, use_container_width=True)
     
