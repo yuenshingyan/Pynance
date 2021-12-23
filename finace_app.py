@@ -224,6 +224,7 @@ volatility_stats = pd.DataFrame({
     "Return (%)":[round(net_return_hv * 100, 2), round(net_return_lv * 100, 2)]}, 
     index=["High Volatility", "Low Volatility"])
 
+st.subheader("Regime Stats")
 st.dataframe(volatility_stats)
 
 # Portfolio Optimization
