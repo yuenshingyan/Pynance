@@ -103,7 +103,7 @@ def regime_detection(historical_price, ticker):
   returns_high_volatility[:] = np.nan
   returns_low_volatility[:] = np.nan
   
-  if len(len(log_ret.dropna()[Z == 0])) > 0 and len(len(log_ret.dropna()[Z == 1])) > 0:
+  if len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) > 0:
     if max(log_ret.dropna()[Z == 1]) > max(log_ret.dropna()[Z == 0]):
       returns_high_volatility[Z == 1] = log_ret.dropna()[Z == 1]
       returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
@@ -112,11 +112,11 @@ def regime_detection(historical_price, ticker):
       returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
       returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
       
-  elif len(len(log_ret.dropna()[Z == 0])) > 0 and len(len(log_ret.dropna()[Z == 1])) == 0:
+  elif len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) == 0:
       returns_high_volatility[Z == 1] = np.array()
       returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
 
-  elif len(len(log_ret.dropna()[Z == 0])) == 0 and len(len(log_ret.dropna()[Z == 1])) > 0:
+  elif len(log_ret.dropna()[Z == 0]) == 0 and len(log_ret.dropna()[Z == 1]) > 0:
       returns_high_volatility[Z == 0] = np.array()
       returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]    
   
