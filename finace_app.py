@@ -118,8 +118,8 @@ def regime_detection(historical_price, ticker):
   p_historical.grid.grid_line_alpha=0.3
 
   p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
-  p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], fill_color="#99FFCC", line_color="black")
-  p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], fill_color="#F2583E", line_color="black")
+  p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
+  p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
   # Log Return with High Volatility
   p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1250, height=200)
@@ -129,27 +129,12 @@ def regime_detection(historical_price, ticker):
   p_log_ret.grid.grid_line_alpha=0.3
 
   # show the results
-  #p_historical.legend.location = "top_left"
+  p_historical.legend.location = "top_left"
   p_historical.xaxis.visible = False
   p_historical.yaxis.axis_label = 'Price (USD)'
   
-  #p_log_ret.legend.location = "top_left"
+  p_log_ret.legend.location = "top_left"
   p_log_ret.yaxis.axis_label = 'Volatility'
-  
-  legend = [
-    ("Adjusted Close Price (Inc)", 
-     [p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], fill_color="#99FFCC", line_color="black")]), 
-    ("Adjusted Close Price (Inc)", 
-     [p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], fill_color="#F2583E", line_color="black")]), 
-    ("High Volatility", 
-     [p_log_ret.vbar(x=historical_price.index, top=returns_high_volatility, width=20, color="#FFDB46")]), 
-    ("Low Volatility", 
-     [p_log_ret.vbar(x=historical_price.index, top=returns_low_volatility, width=20)])]
-  
-  legend = Legend(items=legend)
-  legend.click_policy="mute"
-
-  p_historical.add_layout(legend, 'top')
   
   return column(p_historical, p_log_ret)
 
