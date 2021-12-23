@@ -93,8 +93,8 @@ def regime_detection(historical_price, ticker):
   Z2_Close = pd.DataFrame(Z_Close, index=log_ret.index, columns=['state'])
 
   # dying the close prices
-  close_high_volatility = historical_price[Z_Close == 0]
-  close_low_volatility = historical_price[Z_Close == 1]
+#   close_high_volatility = historical_price[Z_Close == 0]
+#   close_low_volatility = historical_price[Z_Close == 1]
 
   # dying the returns
   returns_high_volatility = np.empty(len(Z))
@@ -102,9 +102,14 @@ def regime_detection(historical_price, ticker):
 
   returns_high_volatility[:] = np.nan
   returns_low_volatility[:] = np.nan
-
-  returns_high_volatility[Z == 1] = log_ret.dropna()[Z == 1]
-  returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+  
+  if max(log_ret.dropna()[Z == 1]) > max(log_ret.dropna()[Z == 0]):
+    returns_high_volatility[Z == 1] = log_ret.dropna()[Z == 1]
+    returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+    
+  else:
+    returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+    returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
   
   returns_high_volatility = np.concatenate(([np.nan], returns_high_volatility))
   returns_low_volatility = np.concatenate(([np.nan], returns_low_volatility))
