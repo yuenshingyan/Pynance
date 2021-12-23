@@ -210,9 +210,11 @@ end_date = cols_name[2].date_input("To", today)
 
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
-
-  p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, ticker)
-  st.bokeh_chart(p, use_container_width=True)
+  if len(historical_price) > 0:
+    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, ticker)
+    st.bokeh_chart(p, use_container_width=True)
+  else:
+    st.write("Selected date range must be greater than one day.")
 
 # Regime Stats
 n_grp_hv, group_duration_median_hv, group_duration_mean_hv, net_return_hv = consecutive_list(returns_high_volatility)
