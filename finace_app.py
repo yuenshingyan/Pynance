@@ -213,21 +213,22 @@ if ticker.isupper() and len(ticker) <= 5:
   if len(historical_price) > 0:
     p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, ticker)
     st.bokeh_chart(p, use_container_width=True)
+    
+    # Regime Stats
+    n_grp_hv, group_duration_median_hv, group_duration_mean_hv, net_return_hv = consecutive_list(returns_high_volatility)
+    n_grp_lv, group_duration_median_lv, group_duration_mean_lv, net_return_lv = consecutive_list(returns_low_volatility)
+    volatility_stats = pd.DataFrame({
+        "Number Of Groups":[n_grp_hv, n_grp_lv], 
+        "Median Durations":[group_duration_median_hv, group_duration_median_lv], 
+        "Mean Durations":[group_duration_mean_hv, group_duration_mean_lv], 
+        "Return (%)":[round(net_return_hv * 100, 2), round(net_return_lv * 100, 2)]}, 
+        index=["High Volatility", "Low Volatility"])
+
+    st.subheader("Regime Stats")
+    st.dataframe(volatility_stats)
+    
   else:
     st.write("Selected date range must be greater than one day.")
-
-# Regime Stats
-n_grp_hv, group_duration_median_hv, group_duration_mean_hv, net_return_hv = consecutive_list(returns_high_volatility)
-n_grp_lv, group_duration_median_lv, group_duration_mean_lv, net_return_lv = consecutive_list(returns_low_volatility)
-volatility_stats = pd.DataFrame({
-    "Number Of Groups":[n_grp_hv, n_grp_lv], 
-    "Median Durations":[group_duration_median_hv, group_duration_median_lv], 
-    "Mean Durations":[group_duration_mean_hv, group_duration_mean_lv], 
-    "Return (%)":[round(net_return_hv * 100, 2), round(net_return_lv * 100, 2)]}, 
-    index=["High Volatility", "Low Volatility"])
-
-st.subheader("Regime Stats")
-st.dataframe(volatility_stats)
 
 # Portfolio Optimization
 st.header("Portfolio Optimization")
