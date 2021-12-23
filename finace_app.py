@@ -116,7 +116,7 @@ def regime_detection(historical_price, ticker):
   TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
   # Historical Price
-  p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1250, height=400, title="Stock Price")
+  p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1250, height=400)
   p_historical.xaxis.major_label_orientation = pi/4
   p_historical.grid.grid_line_alpha=0.3
 
@@ -137,7 +137,6 @@ def regime_detection(historical_price, ticker):
   p_historical.xaxis.visible = False
   p_historical.yaxis.axis_label = 'Price (USD)'
   
-  p_log_ret.legend.location = "top_left"
   p_log_ret.yaxis.axis_label = 'Logarithmic Return'
   
   return column(p_historical, p_log_ret)
