@@ -135,10 +135,8 @@ def regime_detection(historical_price, ticker):
   
   p_log_ret.xaxis.axis_label = 'Date'
   p_log_ret.yaxis.axis_label = 'Volatility'
-  
-  show(column(p_historical, p_log_ret), notebook_handle=True)
     
-  return p 
+  return column(p_historical, p_log_ret)
 
 def var(ret, initial_investment, conf_level=.05):
   cov_matrix = ret.cov()
