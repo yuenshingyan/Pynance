@@ -129,15 +129,15 @@ def regime_detection(historical_price, ticker):
   p_log_ret.xaxis.major_label_orientation = pi/4
   p_log_ret.grid.grid_line_alpha=0.3
   
-  p_log_ret.vbar(x=historical_price.index, top=returns_high_volatility * 100, width=20, color="#FFDB46")
-  p_log_ret.vbar(x=historical_price.index, top=returns_low_volatility * 100, width=20)
+  p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=20, color="#FFDB46")
+  p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=20)
 
   # show the results
   p_historical.legend.location = "top_left"
   p_historical.xaxis.visible = False
   p_historical.yaxis.axis_label = 'Price (USD)'
   
-  p_log_ret.yaxis.axis_label = 'Logarithmic Return'
+  p_log_ret.yaxis.axis_label = 'Log Return'
   
   return column(p_historical, p_log_ret), returns_high_volatility, returns_low_volatility
 
