@@ -186,7 +186,7 @@ def consecutive_list(iterable):
   list_cluster_len = [len(v) for v in volatility_clusters.values()]
   group_duration_median = np.median(list_cluster_len)
   group_duration_mean = max(list_cluster_len) / len(volatility_clusters.values())
-  net_return = np.exp(np.nansum(iterable)) - 1
+  net_return = np.expm1(np.nansum(iterable))
 
   return n_grp, group_duration_median, group_duration_mean, net_return
 
