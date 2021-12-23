@@ -7,6 +7,8 @@ import streamlit as st
 import math
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
+from bokeh.layouts import column
+from bokeh.models import ColumnDataSource
 from hmmlearn import hmm
 import yfinance as yf
 import pandas as pd
@@ -104,77 +106,37 @@ def regime_detection(historical_price, ticker):
   returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
   returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
 
+  inc = historical_price["Adj Close"] > historical_price["Open"]
+  dec = historical_price["Open"] > historical_price["Adj Close"]
   w = 12 * 60 * 60 * 1000 # half day in ms
 
   TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
-  title = ticker + ' Historical Price'
+  # Historical Price
+  p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1300, height=400, title="Stock Price")
+  p_historical.xaxis.major_label_orientation = pi/4
+  p_historical.grid.grid_line_alpha=0.3
 
-  p = figure(x_axis_type="datetime", tools=TOOLS, plot_width=1300, title = title)
+  p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
+  p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
+  p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
-  p.xaxis.major_label_orientation = math.pi/4
+  # Log Return with High Volatility
+  p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+  p_log_ret.vbar(x=historical_price.index, top=returns_high_volatility, width=20, color="#FFDB46")
+  p_log_ret.vbar(x=historical_price.index, top=returns_low_volatility, width=20)
+  p_log_ret.xaxis.major_label_orientation = pi/4
+  p_log_ret.grid.grid_line_alpha=0.3
 
-  p.grid.grid_line_alpha=0.3
-
-  inc_high_volatility = close_high_volatility["Adj Close"] > close_high_volatility["Open"]
-  dec_high_volatility = close_high_volatility["Open"] > close_high_volatility["Adj Close"]
-
-  p.segment(close_high_volatility.index, 
-            close_high_volatility["High"], 
-            close_high_volatility.index, 
-            close_high_volatility["Low"], 
-            color="black", 
-            line_width=0.1)
+  # show the results
+  p_historical.legend.location = "top_left"
+  p_historical.xaxis.visible = False
+  p_historical.yaxis.axis_label = 'Price (USD)'
   
-  p.vbar(close_high_volatility.index[inc_high_volatility], 
-        w, 
-        close_high_volatility["Open"][inc_high_volatility], 
-        close_high_volatility["Adj Close"][inc_high_volatility], 
-        fill_color="#FFEE49",
-        line_color="#FFEE49", 
-        line_width=0.1, 
-        legend_label="High Volatility (Inc)")
+  p_log_ret.xaxis.axis_label = 'Date'
+  p_log_ret.yaxis.axis_label = 'Volatility'
   
-  p.vbar(close_high_volatility.index[dec_high_volatility], 
-        w, 
-        close_high_volatility["Open"][dec_high_volatility], 
-        close_high_volatility["Adj Close"][dec_high_volatility], 
-        fill_color="#368EF3",
-        line_color="#368EF3", 
-        line_width=0.1, 
-        legend_label="High Volatility (Dec)")
-  
-  inc_low_volatility = close_low_volatility["Adj Close"] > close_low_volatility["Open"]
-  dec_low_volatility = close_low_volatility["Open"] > close_low_volatility["Adj Close"]
-  
-  p.segment(close_low_volatility.index, 
-            close_low_volatility["High"], 
-            close_low_volatility.index, 
-            close_low_volatility["Low"], 
-            color="black", 
-            line_width=0.1)
-  
-  p.vbar(close_low_volatility.index[inc_low_volatility], 
-        w, 
-        close_low_volatility["Open"][inc_low_volatility], 
-        close_low_volatility["Adj Close"][inc_low_volatility], 
-        fill_color="#99FFCC",
-        line_color="#99FFCC", 
-        line_width=0.1, 
-        legend_label="Low Volatility (Inc)")
-  
-  p.vbar(close_low_volatility.index[dec_low_volatility], 
-        w, 
-        close_low_volatility["Open"][dec_low_volatility], 
-        close_low_volatility["Adj Close"][dec_low_volatility], 
-        fill_color="#F2583E",
-        line_color="#F2583E", 
-        line_width=0.1, 
-        legend_label="Low Volatility (Dec)")
-
-  p.xaxis.axis_label = 'Date'
-  p.yaxis.axis_label = 'Price (USD)'
-  p.legend.location = "top_left"
+  show(column(p_historical, p_log_ret), notebook_handle=True)
     
   return p 
 
