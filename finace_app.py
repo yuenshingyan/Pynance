@@ -122,7 +122,7 @@ def regime_detection(historical_price, ticker):
   p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
   # Log Return with High Volatility
-  p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+  p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1200, height=200)
   p_log_ret.vbar(x=historical_price.index, top=returns_high_volatility, width=20, color="#FFDB46")
   p_log_ret.vbar(x=historical_price.index, top=returns_low_volatility, width=20)
   p_log_ret.xaxis.major_label_orientation = pi/4
