@@ -199,7 +199,7 @@ def consecutive_list(iterable):
     net_return = np.expm1(np.nansum(iterable))
     
   else:
-    return None, None, None, None
+    return 0, 0, 0, 0
 
   return n_grp, group_duration_median, group_duration_mean, net_return
 
@@ -232,16 +232,9 @@ if ticker.isupper() and len(ticker) <= 5:
     p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, ticker)
     st.bokeh_chart(p, use_container_width=True)
     
-    # Regime Stats
-    if len(returns_high_volatility) > 0:  
-      n_grp_hv, group_duration_median_hv, group_duration_mean_hv, net_return_hv = consecutive_list(returns_high_volatility)
-    else:
-      n_grp_hv, group_duration_median_hv, group_duration_mean_hv, net_return_hv = None, None, None, None
-      
-    if len(returns_low_volatility) > 0:  
-      n_grp_lv, group_duration_median_lv, group_duration_mean_lv, net_return_lv = consecutive_list(returns_low_volatility)
-    else:
-      n_grp_lv, group_duration_median_lv, group_duration_mean_lv, net_return_lv = None, None, None, None
+    # Regime Stats 
+    n_grp_hv, group_duration_median_hv, group_duration_mean_hv, net_return_hv = consecutive_list(returns_high_volatility)     
+    n_grp_lv, group_duration_median_lv, group_duration_mean_lv, net_return_lv = consecutive_list(returns_low_volatility)
     
     volatility_stats = pd.DataFrame({
         "Number Of Groups":[n_grp_hv, n_grp_lv], 
