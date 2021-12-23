@@ -139,7 +139,7 @@ def regime_detection(historical_price, ticker):
   
   p_log_ret.yaxis.axis_label = 'Logarithmic Return'
   
-  return column(p_historical, p_log_ret)
+  return column(p_historical, p_log_ret), returns_high_volatility, returns_low_volatility
 
 def var(ret, initial_investment, conf_level=.05):
   cov_matrix = ret.cov()
@@ -155,6 +155,35 @@ def var(ret, initial_investment, conf_level=.05):
   var_1d1 = initial_investment - cutoff1
   
   return var_1d1[0][0]
+
+def consecutive_list(iterable):
+  res = []
+  for p in iterable:
+    if p > 0:
+      res.append(True)
+    elif p < 0:
+      res.append(False)
+
+  volatility_clusters = {}
+  count = 0
+  st = 0
+  for i, j in enumerate(res):
+    if i + 1 < len(res):
+      if res[i] is not res[i + 1]:
+        volatility_clusters[count] = res[st:i + 1]
+        count += 1
+        st = i + 1
+    
+    else:
+      volatility_clusters[count] = res[st+1:]
+
+  n_grp = list(volatility_clusters.keys())[-1]
+  list_cluster_len = [len(v) for v in volatility_clusters.values()]
+  group_duration_median = np.median(list_cluster_len)
+  group_duration_mean = max(list_cluster_len) / len(volatility_clusters.values())
+  net_return = np.exp(np.nansum(iterable)) - 1
+
+  return n_grp, group_duration_median, group_duration_mean, net_return
 
 st.set_page_config(
     page_title="Pynance",
@@ -182,8 +211,20 @@ end_date = cols_name[2].date_input("To", today)
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
 
-  p = regime_detection(historical_price, ticker)
+  p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, ticker)
   st.bokeh_chart(p, use_container_width=True)
+
+# Regime Stats
+n_grp_hv, group_duration_median_hv, group_duration_mean_hv, net_return_hv = consecutive_list(returns_high_volatility)
+n_grp_lv, group_duration_median_lv, group_duration_mean_lv, net_return_lv = consecutive_list(returns_low_volatility)
+volatility_stats = pd.DataFrame({
+    "Number Of Groups":[n_grp_hv, n_grp_lv], 
+    "Median Durations":[group_duration_median_hv, group_duration_median_lv], 
+    "Mean Durations":[group_duration_mean_hv, group_duration_mean_lv], 
+    "Return (%)":[round(net_return_hv * 100, 2), round(net_return_lv * 100, 2)]}, 
+    index=["High Volatility", "Low Volatility"])
+
+st.dataframe(volatility_stats)
 
 # Portfolio Optimization
 st.header("Portfolio Optimization")
