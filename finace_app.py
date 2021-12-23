@@ -116,16 +116,16 @@ def regime_detection(historical_price, ticker):
   TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
   # Historical Price
-  p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1300, height=400)
+  p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=2000, height=400)
   p_historical.xaxis.major_label_orientation = pi/4
   p_historical.grid.grid_line_alpha=0.3
 
   p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
-  p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], fill_color="#99FFCC", line_color="#99FFCC", legend_label="Adjusted Close Price (Inc)")
-  p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], fill_color="#F2583E", line_color="#F2583E", legend_label="Adjusted Close Price (Dec)")
+  p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
+  p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
   # Log Return with High Volatility
-  p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+  p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=2000, height=200)
   p_log_ret.xaxis.major_label_orientation = pi/4
   p_log_ret.grid.grid_line_alpha=0.3
   
