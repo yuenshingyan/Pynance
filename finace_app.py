@@ -149,7 +149,7 @@ def regime_detection(historical_price, ticker):
   legend = Legend(items=legend)
   legend.click_policy="mute"
 
-  p.add_layout(legend, 'top_left')
+  p_historical.add_layout(legend, 'top_left')
   
   return column(p_historical, p_log_ret)
 
