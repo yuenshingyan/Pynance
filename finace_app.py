@@ -137,7 +137,7 @@ def regime_detection(historical_price, ticker):
   p_historical.xaxis.visible = False
   p_historical.yaxis.axis_label = 'Price (USD)'
   
-  p_log_ret.yaxis.axis_label = 'Log Return'
+  p_log_ret.yaxis.axis_label = 'Return (%)'
   
   return column(p_historical, p_log_ret), returns_high_volatility, returns_low_volatility
 
