@@ -8,7 +8,7 @@ from math import pi
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
 from bokeh.layouts import column
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, Legend
 from hmmlearn import hmm
 import yfinance as yf
 import pandas as pd
