@@ -105,6 +105,9 @@ def regime_detection(historical_price, ticker):
 
   returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
   returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
+  
+  returns_high_volatility = np.concatenate(([np.nan], returns_high_volatility))
+  returns_low_volatility = np.concatenate(([np.nan], returns_low_volatility))
 
   inc = historical_price["Adj Close"] > historical_price["Open"]
   dec = historical_price["Open"] > historical_price["Adj Close"]
@@ -123,10 +126,11 @@ def regime_detection(historical_price, ticker):
 
   # Log Return with High Volatility
   p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1250, height=200)
-  p_log_ret.vbar(x=historical_price.index, top=returns_high_volatility, width=20, color="#FFDB46")
-  p_log_ret.vbar(x=historical_price.index, top=returns_low_volatility, width=20)
   p_log_ret.xaxis.major_label_orientation = pi/4
   p_log_ret.grid.grid_line_alpha=0.3
+  
+  p_log_ret.vbar(x=historical_price.index, top=returns_high_volatility, width=20, color="#FFDB46")
+  p_log_ret.vbar(x=historical_price.index, top=returns_low_volatility, width=20)
 
   # show the results
   p_historical.legend.location = "top_left"
