@@ -4,7 +4,7 @@ from datetime import date
 import datetime
 import streamlit as st
 
-import math
+from math import pi
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
 from bokeh.layouts import column
