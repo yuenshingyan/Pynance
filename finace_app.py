@@ -244,8 +244,7 @@ start_date_port_opt = cols_name2[1].date_input("From", one_year_ago, key="port_o
 end_date_port_opt = cols_name2[2].date_input("To", today, key="port_opt")
 capital = cols_name2[3].number_input('Capital', value=10000)
 
-
-acp, warning = get_adj_close_prices(tickers.split(","), start_date, end_date)
+acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
 
 if warning != []:
   st.write(f"Ticker: {' '.join(warning)} cannot be found.")
