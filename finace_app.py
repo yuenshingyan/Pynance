@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(historical_price, year_range):
+def regime_detection(historical_price):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -124,7 +124,7 @@ def regime_detection(historical_price, year_range):
     TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
     # Historical Price
-    p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1300*2, height=400)
+    p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1300, height=400)
     p_historical.xaxis.major_label_orientation = pi/4
     p_historical.grid.grid_line_alpha=0.3
 
@@ -133,7 +133,7 @@ def regime_detection(historical_price, year_range):
     p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
     # Log Return with High Volatility
-    p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300*2, height=200)
+    p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
     p_log_ret.xaxis.major_label_orientation = pi/4
     p_log_ret.grid.grid_line_alpha=0.3
 
@@ -263,7 +263,7 @@ for b, bv in zip(buttons, buttons_val):
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
-    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, bv)
+    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price)
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
 
