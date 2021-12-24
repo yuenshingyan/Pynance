@@ -317,7 +317,7 @@ cols_name4[1].text_input("Name your portfolio")
 #cols_name4[1].button("Save Porfolio") 
 
 cols_name5 = st.columns(2)
-choose_condidence_lvl = cols_name5[1].slider("Confidence Level", .05, .5)
+choose_condidence_lvl = cols_name5[0].slider("Confidence Level", .05, .5)
 
 #if cols_name4[1].button("Save Porfolio"):
   
