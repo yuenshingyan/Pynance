@@ -212,11 +212,11 @@ for key in ["", "Watchlist", "Portfolios"]:
 st.title('Pynance')
     
 # Regime Detection 
+st.header("Regime Detection")
 cols_regime_detection = st.columns(3)
 today = date.today()
 one_year_ago = today - datetime.timedelta(365)
 
-st.header("Regime Detection")
 ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
 start_date = cols_regime_detection[1].date_input("From", one_year_ago)
 end_date = cols_regime_detection[2].date_input("To", today)  
