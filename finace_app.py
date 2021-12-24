@@ -274,31 +274,22 @@ if warning != []:
 cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
 
 # Rounding
-cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
-cleaned_weights_max_sharpe_pct = round(cleaned_weights_max_sharpe * 100, 2)
-port_max_sharpe_pct = np.hstack([cleaned_weights_min_volatility_pct, cleaned_weights_max_sharpe_pct])
-port_max_sharpe_pct = pd.DataFrame(port_max_sharpe_pct, columns=['Min Volatility (%)', 'Max Sharpe (%)'], index=tickers.split(","))
+cleaned_weights = np.hstack([cleaned_weights_min_volatility, cleaned_weights_max_sharpe])
+performance_stats = np.hstack([performance_stats_min_volatility, performance_stats_max_sharpe])
+cleaned_weights_performance_stats = np.vstack([cleaned_weights, performance_stats])
 
-cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * capital, 2)
-cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
-port_max_sharpe_capital = np.hstack([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital])
-port_max_sharpe_capital = pd.DataFrame(port_max_sharpe_capital, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
+cleaned_weights_performance_stats = pd.DataFrame(cleaned_weights_performance_stats, 
+                                                 columns=['Min Volatility (%)', 'Max Sharpe (%)'], 
+                                                 index=tickers.split(",") + ["Expected annual return", "Annual volatility", "Sharpe Ratio"])
 
-performance_stats = pd.DataFrame([performance_stats_min_volatility, 
-                                  performance_stats_max_sharpe, 
-                                  performance_stats_min_volatility, 
-                                  performance_stats_max_sharpe], 
-             index=['Min Volatility (%)', 'Max Sharpe (%)', 'Min Volatility', 'Max Sharpe'], 
-             columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
-
+cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] = cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] * 100
+cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] = cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] * 100
+cleaned_weights_performance_stats.loc[:, 'Min Volatility'] = cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] * capital
+cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] * capital
 
 cols_portfolio_opt_performance_stat = st.columns(2)
-performance_stats.iloc[0, :2] = performance_stats.iloc[0, :2] * 100
-performance_stats.iloc[0, 2:4] = performance_stats.iloc[0, 2:4] * capital
 cols_portfolio_opt_performance_stat[0].subheader("Optimized Portfolio")
-cols_portfolio_opt_performance_stat[1].subheader("Performance Stats")
-cols_portfolio_opt_performance_stat[0].dataframe(port_max_sharpe_pct)
-cols_portfolio_opt_performance_stat[1].dataframe(performance_stats)
+cols_portfolio_opt_performance_stat[0].dataframe(cleaned_weights_performance_stats)
 
 
 cols_value_at_risk = st.columns(2)
