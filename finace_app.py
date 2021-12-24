@@ -202,6 +202,9 @@ def consecutive_list(iterable):
 
   return n_grp, group_duration_median, group_duration_mean, net_return
 
+g = Github("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")
+repo = g.get_user("HindyDS").get_repo("Finance")
+
 def read_db(db_name):
   file = repo.get_contents(db_name, ref="main")
   db = pd.read_csv(StringIO(file.decoded_content.decode('utf-8')))
