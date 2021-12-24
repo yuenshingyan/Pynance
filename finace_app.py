@@ -283,13 +283,13 @@ cleaned_weights_performance_stats = pd.DataFrame(cleaned_weights_performance_sta
                                                  columns=['Min Volatility (%)', 'Max Sharpe (%)'], 
                                                  index=tickers.split(",") + ["Expected annual return", "Annual volatility", "Sharpe Ratio"])
 
-cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] = round(cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] * 100, 2)
-cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] = round(cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] * 100, 2)
-cleaned_weights_performance_stats.loc[:, 'Min Volatility'] = round(cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] * capital, 2)
-cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = round(cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] * capital, 2)
+cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] = cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] * 100
+cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] = cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] * 100
+cleaned_weights_performance_stats.loc[:, 'Min Volatility'] = cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] * capital
+cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] * capital
 
 st.subheader("Optimized Portfolio")
-st.dataframe(cleaned_weights_performance_stats)
+st.dataframe(cleaned_weights_performance_stats.style.format("{:.2%}"))
 
 
 cols_value_at_risk = st.columns(2)
