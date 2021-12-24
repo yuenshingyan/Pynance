@@ -209,7 +209,7 @@ for key in ["", "Watchlist", "Portfolios"]:
     st.session_state[key] = {} 
     
 # -----------------------------------------------------------------Side Bar-----------------------------------------------------------------------------------------
-today = date.today()
+today = date.today() - datetime.timedelta(1)
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
 if add_ticker not in st.session_state['Watchlist']:
   if add_ticker != "Type a stock symbol":
@@ -235,7 +235,7 @@ one_year_ago = today - datetime.timedelta(365)
 
 ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
 start_date = cols_regime_detection[1].date_input("From", one_year_ago)
-end_date = cols_regime_detection[2].date_input("To", today)  
+end_date = cols_regime_detection[2].date_input("To", today, max_value=today)  
 
 # Regime Detection Inputs
 if ticker.isupper() and len(ticker) <= 5:
