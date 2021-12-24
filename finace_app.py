@@ -1,26 +1,22 @@
 # Import Dependencies
-import time
-from datetime import date
-import datetime
-import streamlit as st
-
-from math import pi
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
 from bokeh.layouts import column
 from bokeh.models import ColumnDataSource, Legend
+from datetime import date
+import datetime
 from hmmlearn import hmm
-import yfinance as yf
-import pandas as pd
 import numpy as np
-
+from math import pi
+from matplotlib import pyplot
+from scipy.stats import norm
+import streamlit as st
+import time
+import pandas as pd
 from pypfopt import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
-
-from matplotlib import pyplot
-
-from scipy.stats import norm
+import yfinance as yf
 
 # Helper Functions
 def get_datetime(past_days=365):
@@ -199,6 +195,8 @@ def consecutive_list(iterable):
 
   return n_grp, group_duration_median, group_duration_mean, net_return
 
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 st.set_page_config(
     page_title="Pynance",
     page_icon="📈",
@@ -206,28 +204,29 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-cols_name = st.columns(3)
-cols_name2 = st.columns(5)
-cols_name3 = st.columns(3)    
-cols_name4 = st.columns(2)
-cols_name5 = st.columns(2)
+for key in ["", "Watchlist", "Portfolios"]:
+  if key not in st.session_state:
+    st.session_state[key] = {} 
+
+cols_regime_detection = st.columns(3)
+cols_from_to_capital = st.columns(3)
+cols_load_save = st.columns(2)
+cols_portfolio_opt_performance_stat = st.columns(2)
+cols_value_at_risk = st.columns(2)
 
 # Main
 st.title('Pynance')
 
 # Regime Detection 
-st.header("Regime Detection")
-
-
-ticker = cols_name[0].text_input(label="Please type in a stock symbol.", value="AAPL")
-
 today = date.today()
-days = datetime.timedelta(365)
-one_year_ago = today - days
+one_year_ago = today - datetime.timedelta(365)
 
-start_date = cols_name[1].date_input("From", one_year_ago)
-end_date = cols_name[2].date_input("To", today)  
+st.header("Regime Detection")
+ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
+start_date = cols_regime_detection[1].date_input("From", one_year_ago)
+end_date = cols_regime_detection[2].date_input("To", today)  
 
+# Regime Detection Inputs
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
@@ -250,95 +249,3 @@ if ticker.isupper() and len(ticker) <= 5:
     
   else:
     st.write("Selected date range must be greater than one day.")
-
-# Portfolio Optimization
-st.header("Portfolio Optimization")
-
-default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
-tickers = cols_name2[0].text_input(label="Please type in a portfolio", value=default_tickers)
-start_date_port_opt = cols_name2[1].date_input("From", one_year_ago, key="port_opt")
-end_date_port_opt = cols_name2[2].date_input("To", today, key="port_opt")
-capital = cols_name2[3].number_input('Capital', value=10000)
-
-if "Portfolios" not in st.session_state:
-  st.session_state["Portfolios"] = {}
-
-option = cols_name2[4].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
-
-acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
-
-if warning != []:
-  st.write(f"Ticker: {' '.join(warning)} cannot be found.")
-
-cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
-
-# Rounding
-cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
-cleaned_weights_max_sharpe_pct = round(cleaned_weights_max_sharpe * 100, 2)
-port_max_sharpe_pct = np.hstack([cleaned_weights_min_volatility_pct, cleaned_weights_max_sharpe_pct])
-port_max_sharpe_pct = pd.DataFrame(port_max_sharpe_pct, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
-
-cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * capital, 2)
-cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
-port_max_sharpe_capital = np.hstack([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital])
-port_max_sharpe_capital = pd.DataFrame(port_max_sharpe_capital, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
-
-performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_stats_max_sharpe], 
-             index=['Min Volatility', 'Max Sharpe'], 
-             columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
-
-if 'Watchlist' not in st.session_state:
-    st.session_state['Watchlist'] = {} 
-    
-
-cols_name3[2].subheader("Display Format")
-display_format = cols_name3[2].radio("", ('Percentages', 'Fractions Of Capital'))    
-
-if display_format == "Percentages":
-    performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * 100
-    cols_name3[0].subheader("Optimized Portfolio")
-    cols_name3[1].subheader("Performance Stats")
-    cols_name3[0].dataframe(port_max_sharpe_pct)
-    cols_name3[1].dataframe(performance_stats)
-    
-elif display_format == "Fractions Of Capital":
-    performance_stats.iloc[0, :] = performance_stats.iloc[0, :] * capital
-    cols_name3[0].subheader("Optimized Portfolio")
-    cols_name3[1].subheader("Performance Stats")
-    cols_name3[0].dataframe(port_max_sharpe_capital)
-    cols_name3[1].dataframe(performance_stats)
-    
-# Value At Risk
-
-investing_period = end_date_port_opt - start_date_port_opt
-cols_name4[0].subheader("Value At Risk") 
-choose_condidence_lvl = cols_name4[0].slider("Confidence Level", .05, .5)
-
-# Conditional Value At Risk
-cols_name4[1].subheader("Save Portfolio") 
-port_name = cols_name4[1].text_input("Name your portfolio")
-
-
-value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
-cols_name5[0].text(f"{(1 - choose_condidence_lvl) * 100}% confidence that your portfolio of ${capital}\nwill not exceed losses greater than ${round(value_at_risk, 2)} over a {investing_period.days} day period.")
-
-if cols_name4[1].button("Save Porfolio"):
-  if port_name not in st.session_state["Portfolios"]:
-    st.session_state["Portfolios"][port_name] = tickers
-    st.write("Porfolio Saved Successfully!")
-
-# Side Bar
-add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
-if add_ticker not in st.session_state['Watchlist']:
-  if add_ticker != "Type a stock symbol":
-    days = datetime.timedelta(2)
-    three_day_ago = today - days
-    close_prices = yf.download(add_ticker, start=three_day_ago, end=today)['Adj Close']
-    st.session_state['Watchlist'][add_ticker] = round(close_prices.pct_change(-1).dropna()[-1] * 100, 2)
-    
-else:
-  st.session_state['Watchlist'].pop(add_ticker)
-  
-st.sidebar.text('Watchlist\n')
-watchlist_str = "\n".join(["\t" + ticker + "\t" + str(ret) + "%" for ticker, ret in st.session_state['Watchlist'].items()])
-st.sidebar.text(watchlist_str)
