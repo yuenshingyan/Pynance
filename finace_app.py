@@ -208,14 +208,14 @@ for key in ["", "Watchlist", "Portfolios"]:
   if key not in st.session_state:
     st.session_state[key] = {} 
 
+# ----------------------------------------------------------------------------Main----------------------------------------------------------------------------------
+st.title('Pynance')
+    
 cols_regime_detection = st.columns(3)
 cols_from_to_capital = st.columns(3)
 cols_load_save = st.columns(2)
 cols_portfolio_opt_performance_stat = st.columns(2)
 cols_value_at_risk = st.columns(2)
-
-# Main
-st.title('Pynance')
 
 # Regime Detection 
 today = date.today()
