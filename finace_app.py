@@ -207,6 +207,22 @@ st.set_page_config(
 for key in ["", "Watchlist", "Portfolios"]:
   if key not in st.session_state:
     st.session_state[key] = {} 
+    
+# -----------------------------------------------------------------Side Bar-----------------------------------------------------------------------------------------
+add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
+if add_ticker not in st.session_state['Watchlist']:
+  if add_ticker != "Type a stock symbol":
+    days = datetime.timedelta(2)
+    three_day_ago = today - days
+    close_prices = yf.download(add_ticker, start=three_day_ago, end=today)['Adj Close']
+    st.session_state['Watchlist'][add_ticker] = round(close_prices.pct_change(-1).dropna()[-1] * 100, 2)
+    
+else:
+  st.session_state['Watchlist'].pop(add_ticker)
+  
+st.sidebar.text('Watchlist\n')
+watchlist_str = "\n".join(["\t" + ticker + "\t" + str(ret) + "%" for ticker, ret in st.session_state['Watchlist'].items()])
+st.sidebar.text(watchlist_str)
 
 # ----------------------------------------------------------------------------Main----------------------------------------------------------------------------------
 st.title('Pynance')
