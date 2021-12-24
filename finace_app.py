@@ -211,13 +211,8 @@ for key in ["", "Watchlist", "Portfolios"]:
 # ----------------------------------------------------------------------------Main----------------------------------------------------------------------------------
 st.title('Pynance')
     
-cols_regime_detection = st.columns(3)
-cols_from_to_capital = st.columns(3)
-cols_load_save = st.columns(2)
-cols_portfolio_opt_performance_stat = st.columns(2)
-cols_value_at_risk = st.columns(2)
-
 # Regime Detection 
+cols_regime_detection = st.columns(3)
 today = date.today()
 one_year_ago = today - datetime.timedelta(365)
 
@@ -249,3 +244,8 @@ if ticker.isupper() and len(ticker) <= 5:
     
   else:
     st.write("Selected date range must be greater than one day.")
+    
+cols_from_to_capital = st.columns(3)
+cols_load_save = st.columns(2)
+cols_portfolio_opt_performance_stat = st.columns(2)
+cols_value_at_risk = st.columns(2)
