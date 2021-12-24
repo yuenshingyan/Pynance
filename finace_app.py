@@ -277,7 +277,7 @@ cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_mi
 cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
 cleaned_weights_max_sharpe_pct = round(cleaned_weights_max_sharpe * 100, 2)
 port_max_sharpe_pct = np.hstack([cleaned_weights_min_volatility_pct, cleaned_weights_max_sharpe_pct])
-port_max_sharpe_pct = pd.DataFrame([port_max_sharpe_pct, port_max_sharpe_pct], columns=['Min Volatility (%)', 'Max Sharpe (%)', 'Min Volatility', 'Max Sharpe'], index=tickers.split(","))
+port_max_sharpe_pct = pd.DataFrame(port_max_sharpe_pct, columns=['Min Volatility (%)', 'Max Sharpe (%)'], index=tickers.split(","))
 
 cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * capital, 2)
 cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
