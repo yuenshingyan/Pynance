@@ -206,12 +206,18 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+cols_name = st.columns(3)
+cols_name2 = st.columns(5)
+cols_name3 = st.columns(3)    
+cols_name4 = st.columns(2)
+cols_name5 = st.columns(2)
+
 # Main
 st.title('Pynance')
 
 # Regime Detection 
 st.header("Regime Detection")
-cols_name = st.columns(3)
+
 
 ticker = cols_name[0].text_input(label="Please type in a stock symbol.", value="AAPL")
 
@@ -247,7 +253,7 @@ if ticker.isupper() and len(ticker) <= 5:
 
 # Portfolio Optimization
 st.header("Portfolio Optimization")
-cols_name2 = st.columns(5)
+
 default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
 tickers = cols_name2[0].text_input(label="Please type in a portfolio", value=default_tickers)
 start_date_port_opt = cols_name2[1].date_input("From", one_year_ago, key="port_opt")
@@ -284,7 +290,7 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
 if 'Watchlist' not in st.session_state:
     st.session_state['Watchlist'] = {} 
     
-cols_name3 = st.columns(3)    
+
 cols_name3[2].subheader("Display Format")
 display_format = cols_name3[2].radio("", ('Percentages', 'Fractions Of Capital'))    
 
@@ -303,7 +309,6 @@ elif display_format == "Fractions Of Capital":
     cols_name3[1].dataframe(performance_stats)
     
 # Value At Risk
-cols_name4 = st.columns(2)
 
 investing_period = end_date_port_opt - start_date_port_opt
 cols_name4[0].subheader("Value At Risk") 
@@ -313,11 +318,9 @@ choose_condidence_lvl = cols_name4[0].slider("Confidence Level", .05, .5)
 cols_name4[1].subheader("Save Portfolio") 
 port_name = cols_name4[1].text_input("Name your portfolio")
 
-cols_name5 = st.columns(2)
+
 value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
 cols_name5[0].text(f"{(1 - choose_condidence_lvl) * 100}% confidence that your portfolio of ${capital}\nwill not exceed losses greater than ${round(value_at_risk, 2)} over a {investing_period.days} day period.")
-
-cols_name[1].button("Save")
 
 if cols_name4[1].button("Save Porfolio"):
   if port_name not in st.session_state["Portfolios"]:
