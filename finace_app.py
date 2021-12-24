@@ -243,11 +243,11 @@ ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbo
 start_date = cols_regime_detection[1].date_input("From", one_year_ago)
 end_date = cols_regime_detection[2].date_input("To", today, max_value=today)  
 
-one_week = cols_regime_detection2[1].button("1 Week")
-one_month = cols_regime_detection2[2].button("1 Month")
-three_months = cols_regime_detection2[3].button("3 Months")
-six_months = cols_regime_detection2[4].button("6 Months")
-one_year = cols_regime_detection2[5].button("1 Year")
+one_week = cols_regime_detection2[0].button("1 Week")
+one_month = cols_regime_detection2[1].button("1 Month")
+three_months = cols_regime_detection2[2].button("3 Months")
+six_months = cols_regime_detection2[3].button("6 Months")
+one_year = cols_regime_detection2[4].button("1 Year")
 
 # Regime Detection Inputs
 if ticker.isupper() and len(ticker) <= 5:
