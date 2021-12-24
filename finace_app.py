@@ -245,7 +245,7 @@ if ticker.isupper() and len(ticker) <= 5:
   else:
     st.write("Selected date range must be greater than one day.")
 
-# Portfolio Optimization    
+# ----------------------------------------------------------------Portfolio Optimization---------------------------------------------------------------------------
 st.header("Portfolio Optimization")
 cols_tickers_from_to_capital = st.columns(3)
 cols_load_save = st.columns(2)
@@ -284,10 +284,21 @@ cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital,
 port_max_sharpe_capital = np.hstack([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital])
 port_max_sharpe_capital = pd.DataFrame(port_max_sharpe_capital, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
 
-performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_stats_max_sharpe], 
-             index=['Min Volatility', 'Max Sharpe'], 
+performance_stats = pd.DataFrame([performance_stats_min_volatility, 
+                                  performance_stats_max_sharpe, 
+                                  performance_stats_min_volatility, 
+                                  performance_stats_max_sharpe], 
+             index=['Min Volatility (%)', 'Max Sharpe (%)', 'Min Volatility', 'Max Sharpe'], 
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
 
 cols_portfolio_opt_performance_stat = st.columns(2)
+performance_stats.iloc[0, :2] = performance_stats.iloc[0, :2] * 100
+performance_stats.iloc[0, 2:4] = performance_stats.iloc[0, 2:4] * capital
+cols_portfolio_opt_performance_stat[0].subheader("Optimized Portfolio")
+cols_portfolio_opt_performance_stat[1].subheader("Performance Stats")
+cols_portfolio_opt_performance_stat[0].dataframe(port_max_sharpe_pct)
+cols_portfolio_opt_performance_stat[1].dataframe(performance_stats)
+
+
 cols_value_at_risk = st.columns(2)
