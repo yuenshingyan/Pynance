@@ -236,7 +236,7 @@ st.title('Pynance')
 # Regime Detection 
 st.header("Regime Detection")
 cols_regime_detection = st.columns(3)
-cols_regime_detection2 = st.columns(5)
+cols_regime_detection2 = st.columns(7)
 one_year_ago = today - datetime.timedelta(365)
 
 ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
@@ -248,6 +248,9 @@ one_month = cols_regime_detection2[1].button("1 Month")
 three_months = cols_regime_detection2[2].button("3 Months")
 six_months = cols_regime_detection2[3].button("6 Months")
 one_year = cols_regime_detection2[4].button("1 Year")
+three_years = cols_regime_detection2[5].button("3 Years")
+five_years = cols_regime_detection2[6].button("5 Years")
+ten_years = cols_regime_detection2[7].button("10 Years")
 
 # Regime Detection Inputs
 if ticker.isupper() and len(ticker) <= 5:
