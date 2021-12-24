@@ -256,7 +256,7 @@ capital = cols_name2[3].number_input('Capital', value=10000)
 
 if "Portfolios" not in st.session_state:
   st.session_state["Portfolios"] = {}
-
+print(st.session_state)
 option = cols_name2[4].selectbox('Load a portfolio', st.session_state[Portfolios])
 
 acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
