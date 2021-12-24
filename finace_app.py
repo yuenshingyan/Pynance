@@ -119,7 +119,7 @@ def regime_detection(historical_price, year_range):
 
     inc = historical_price["Adj Close"] > historical_price["Open"]
     dec = historical_price["Open"] > historical_price["Adj Close"]
-    w = 12 * 60 * 60 * 1000 / year_range # half day in ms
+    w = 12 * 60 * 60 * 1000 * year_range # half day in ms
 
     TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
