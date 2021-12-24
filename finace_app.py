@@ -244,8 +244,45 @@ if ticker.isupper() and len(ticker) <= 5:
     
   else:
     st.write("Selected date range must be greater than one day.")
-    
-cols_from_to_capital = st.columns(3)
+
+# Portfolio Optimization    
+st.header("Portfolio Optimization")
+cols_tickers_from_to_capital = st.columns(3)
+
+default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
+tickers = cols_tickers_from_to_capital[0].text_input(label="Please type in a portfolio", value=default_tickers)
+start_date_port_opt = cols_tickers_from_to_capital[1].date_input("From", one_year_ago, key="port_opt")
+end_date_port_opt = cols_tickers_from_to_capital[2].date_input("To", today, key="port_opt")
+capital = cols_tickers_from_to_capital[3].number_input('Capital', value=10000)
+
+if "Portfolios" not in st.session_state:
+  st.session_state["Portfolios"] = {}
+
+option = cols_name2[4].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
+
+acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
+
+if warning != []:
+  st.write(f"Ticker: {' '.join(warning)} cannot be found.")
+
+cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe = port_opt(acp)
+
+# Rounding
+cleaned_weights_min_volatility_pct = round(cleaned_weights_min_volatility * 100, 2)
+cleaned_weights_max_sharpe_pct = round(cleaned_weights_max_sharpe * 100, 2)
+port_max_sharpe_pct = np.hstack([cleaned_weights_min_volatility_pct, cleaned_weights_max_sharpe_pct])
+port_max_sharpe_pct = pd.DataFrame(port_max_sharpe_pct, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
+
+cleaned_weights_min_volatility_capital = round(cleaned_weights_min_volatility * capital, 2)
+cleaned_weights_max_sharpe_capital = round(cleaned_weights_max_sharpe * capital, 2)
+port_max_sharpe_capital = np.hstack([cleaned_weights_min_volatility_capital, cleaned_weights_max_sharpe_capital])
+port_max_sharpe_capital = pd.DataFrame(port_max_sharpe_capital, columns=["Min Volatility", "Max Sharpe"], index=tickers.split(","))
+
+performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_stats_max_sharpe], 
+             index=['Min Volatility', 'Max Sharpe'], 
+             columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
+
+
 cols_load_save = st.columns(2)
 cols_portfolio_opt_performance_stat = st.columns(2)
 cols_value_at_risk = st.columns(2)
