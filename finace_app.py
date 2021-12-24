@@ -261,9 +261,10 @@ cols_load_save[1].subheader("Load a Portfolio")
 port_name = cols_load_save[0].text_input("Name your portfolio", key="save_portfolio")
 option = cols_load_save[1].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
 
-if port_name not in st.session_state["Portfolios"]:
-  st.session_state["Portfolios"][port_name] = tickers
-  st.write("Porfolio Saved Successfully!")
+if port_name != "":
+  if port_name not in st.session_state["Portfolios"]:
+    st.session_state["Portfolios"][port_name] = tickers
+    st.write("Porfolio Saved Successfully!")
 
 acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
 
