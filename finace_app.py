@@ -275,7 +275,7 @@ cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_mi
 
 # Rounding
 cleaned_weights = np.hstack([cleaned_weights_min_volatility, cleaned_weights_max_sharpe])
-performance_stats = np.hstack([performance_stats_min_volatility, performance_stats_max_sharpe])
+performance_stats = np.vstack([performance_stats_min_volatility, performance_stats_max_sharpe])
 print(cleaned_weights.shape, performance_stats.shape)
 cleaned_weights_performance_stats = np.vstack([cleaned_weights, performance_stats.T])
 
