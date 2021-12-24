@@ -320,7 +320,7 @@ cols_name5[0].text(f"{(1 - choose_condidence_lvl) * 100}% confidence that your p
 cols_name[1].button("Save")
 
 if cols_name4[1].button("Save Porfolio"):
-  if port_name not in st.session_state[Portfolios]:
+  if port_name not in st.session_state["Portfolios"]:
     st.session_state["Portfolios"][port_name] = tickers
     st.write("Porfolio Saved Successfully!")
 
