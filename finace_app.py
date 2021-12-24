@@ -291,5 +291,13 @@ cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_perform
 st.subheader("Optimized Portfolio")
 st.dataframe(cleaned_weights_performance_stats.style.format("{:,.2f}"))
 
-
+# -------------------------------------------------------------Value At Risk---------------------------------------------------------------------------------------
 cols_value_at_risk = st.columns(2)
+investing_period = end_date_port_opt - start_date_port_opt
+cols_value_at_risk[0].subheader("Value At Risk") 
+choose_condidence_lvl = cols_value_at_risk[0].slider("Confidence Level", .05, .5)
+
+value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
+cols_name5[0].text(f"{(1 - choose_condidence_lvl) * 100}% confidence that your portfolio of ${capital}\nwill not exceed losses greater than ${round(value_at_risk, 2)} over a {investing_period.days} day period.")
+
+
