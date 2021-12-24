@@ -17,8 +17,6 @@ from pypfopt import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
 import yfinance as yf
-from github import Github
-from io import StringIO 
 
 # Helper Functions
 def get_datetime(past_days=365):
@@ -202,31 +200,6 @@ def consecutive_list(iterable):
 
   return n_grp, group_duration_median, group_duration_mean, net_return
 
-g = Github("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")
-repo = g.get_user("HindyDS").get_repo("Finance")
-
-def read_db(db_name):
-  file = repo.get_contents(db_name, ref="main")
-  db = pd.read_csv(StringIO(file.decoded_content.decode('utf-8')))
-
-  return db
-  
-def delete_pynance_db(db_name):
-  #remove first
-  file = repo.get_contents(db_name + "_PYNANCE_PORTFOLIO_.csv", ref="main")
-  repo.delete_file(file.path, "Remove old DB", file.sha)
-
-def update_pynance_db(new_db, file_name="pynance_db"):
-  # create file
-  if type(new_db) != str:
-    new_db = str(new_db).encode('utf-8')
-
-  repo.create_file(file_name + "_PYNANCE_PORTFOLIO_ + ".csv", "Update DB", new_db)
-  
-def store_portfolio(port_str):
-  port = portfolio.split(",")
-  return pd.DataFrame(port, columns=["Tickers"])
-
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 st.set_page_config(
@@ -350,21 +323,16 @@ st.subheader("Optimized Portfolio")
 st.dataframe(cleaned_weights_performance_stats.style.format("{:,.2f}"))
 
 # Save Load port
-all_ports = [r.name for r in repo.get_contents("") if "_PYNANCE_PORTFOLIO_" in r.name]
 cols_load_save = st.columns(2)
 cols_load_save[0].subheader("Save Portfolio") 
 cols_load_save[1].subheader("Load a Portfolio") 
 port_name = cols_load_save[0].text_input("Name your portfolio", key="save_portfolio")
-option = cols_load_save[1].selectbox('Load a portfolio', all_ports)
+option = cols_load_save[1].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
 
 if port_name != "":
-  if port_name + "_PYNANCE_PORTFOLIO_" + ".csv" not in all_ports:
-    delete_pynance_db(port_name)
-    update_pynance_db(store_portfolio(portfolio), port_name)
-    st.write(f"Porfolio - {port_name} Saved Successfully!")
-                   
-if option:
-  tickers = read_db(option)
+  if port_name not in st.session_state["Portfolios"]:
+    st.session_state["Portfolios"][port_name] = tickers
+    st.write("Porfolio Saved Successfully!")
 
 # -------------------------------------------------------------Value At Risk---------------------------------------------------------------------------------------
 cols_value_at_risk = st.columns(2)
@@ -374,5 +342,3 @@ choose_condidence_lvl = cols_value_at_risk[0].slider("Confidence Level", .05, .5
 
 value_at_risk = var(acp.pct_change(-1).dropna(), capital, choose_condidence_lvl)
 cols_value_at_risk[0].text(f"{(1 - choose_condidence_lvl) * 100}% confidence that your portfolio of ${capital}\nwill not exceed losses greater than ${round(value_at_risk, 2)} over a {investing_period.days} day period.")
-
-
