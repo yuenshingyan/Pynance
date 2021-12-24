@@ -251,12 +251,17 @@ if ticker.isupper() and len(ticker) <= 5:
 
 # Portfolio Optimization
 st.header("Portfolio Optimization")
-cols_name2 = st.columns(4)
+cols_name2 = st.columns(5)
 default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
 tickers = cols_name2[0].text_input(label="Please type in a portfolio", value=default_tickers)
 start_date_port_opt = cols_name2[1].date_input("From", one_year_ago, key="port_opt")
 end_date_port_opt = cols_name2[2].date_input("To", today, key="port_opt")
 capital = cols_name2[3].number_input('Capital', value=10000)
+
+option = cols_name2[4].selectbox(
+     'Load a portfolio',
+     st.session_state[Portfolios])
+
 
 acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
 
@@ -319,9 +324,9 @@ cols_name5[0].text(f"{(1 - choose_condidence_lvl) * 100}% confidence that your p
 cols_name[1].button("Save")
 
 if cols_name4[1].button("Save Porfolio"):
-  st.session_state[port_name] = tickers
-  st.write("Porfolio Saved Successfully!")
-  
+  if port_name not in st.session_state[Portfolios]:
+    st.session_state[Portfolios][port_name] = tickers
+    st.write("Porfolio Saved Successfully!")
 
 # Side Bar
 add_ticker = st.sidebar.text_input(label="Add To Watchlist", value="Type a stock symbol", key="add_ticker")    
