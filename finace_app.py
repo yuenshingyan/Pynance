@@ -321,7 +321,7 @@ cols_name[1].button("Save")
 
 if cols_name4[1].button("Save Porfolio"):
   if port_name not in st.session_state[Portfolios]:
-    st.session_state[Portfolios][port_name] = tickers
+    st.session_state["Portfolios"][port_name] = tickers
     st.write("Porfolio Saved Successfully!")
 
 # Side Bar
