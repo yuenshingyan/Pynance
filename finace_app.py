@@ -248,6 +248,7 @@ if ticker.isupper() and len(ticker) <= 5:
 # Portfolio Optimization    
 st.header("Portfolio Optimization")
 cols_tickers_from_to_capital = st.columns(3)
+cols_load_save = st.columns(2)
 
 default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
 tickers = st.text_input(label="Please type in a portfolio", value=default_tickers)
@@ -255,10 +256,15 @@ start_date_port_opt = cols_tickers_from_to_capital[0].date_input("From", one_yea
 end_date_port_opt = cols_tickers_from_to_capital[1].date_input("To", today, key="port_opt")
 capital = cols_tickers_from_to_capital[2].number_input('Capital', value=10000)
 
-if "Portfolios" not in st.session_state:
-  st.session_state["Portfolios"] = {}
+cols_load_save[0].subheader("Save Portfolio") 
+cols_load_save[1].subheader("Load a Portfolio") 
+option = cols_load_save[1].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
+port_name = cols_load_save[1].text_input("Name your portfolio")
 
-option = cols_name2[4].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
+if cols_load_save[1].text_input("Name your portfolio"):
+  if port_name not in st.session_state["Portfolios"]:
+    st.session_state["Portfolios"][port_name] = tickers
+    st.write("Porfolio Saved Successfully!")
 
 acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
 
@@ -283,6 +289,5 @@ performance_stats = pd.DataFrame([performance_stats_min_volatility, performance_
              columns=["Expected annual return", "Annual volatility", "Sharpe Ratio"]).T
 
 
-cols_load_save = st.columns(2)
 cols_portfolio_opt_performance_stat = st.columns(2)
 cols_value_at_risk = st.columns(2)
