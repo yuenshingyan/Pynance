@@ -259,7 +259,7 @@ if ticker.isupper() and len(ticker) <= 5:
     st.dataframe(volatility_stats)
     
   else:
-    st.write("Selected date range must be greater than one day.")
+    st.write("Selected date range must be greater than one day, try a longer period.")
 
 # ----------------------------------------------------------------Portfolio Optimization---------------------------------------------------------------------------
 st.header("Portfolio Optimization")
