@@ -92,10 +92,6 @@ def regime_detection(historical_price, ticker):
   Z2 = pd.DataFrame(Z, index=log_ret.dropna().index, columns=['state'])
   Z2_Close = pd.DataFrame(Z_Close, index=log_ret.index, columns=['state'])
 
-  # dying the close prices
-#   close_high_volatility = historical_price[Z_Close == 0]
-#   close_low_volatility = historical_price[Z_Close == 1]
-
   # dying the returns
   returns_high_volatility = np.empty(len(Z))
   returns_low_volatility = np.empty(len(Z))
@@ -258,10 +254,10 @@ start_date_port_opt = cols_name2[1].date_input("From", one_year_ago, key="port_o
 end_date_port_opt = cols_name2[2].date_input("To", today, key="port_opt")
 capital = cols_name2[3].number_input('Capital', value=10000)
 
-option = cols_name2[4].selectbox(
-     'Load a portfolio',
-     st.session_state[Portfolios])
+if "Portfolios" not in st.session_state:
+  st.session_stat["Portfolios"] = {}
 
+option = cols_name2[4].selectbox('Load a portfolio', st.session_state[Portfolios])
 
 acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
 
