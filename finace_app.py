@@ -250,10 +250,10 @@ st.header("Portfolio Optimization")
 cols_tickers_from_to_capital = st.columns(3)
 
 default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
-tickers = cols_tickers_from_to_capital[0].text_input(label="Please type in a portfolio", value=default_tickers)
-start_date_port_opt = cols_tickers_from_to_capital[1].date_input("From", one_year_ago, key="port_opt")
-end_date_port_opt = cols_tickers_from_to_capital[2].date_input("To", today, key="port_opt")
-capital = cols_tickers_from_to_capital[3].number_input('Capital', value=10000)
+tickers = st.text_input(label="Please type in a portfolio", value=default_tickers)
+start_date_port_opt = cols_tickers_from_to_capital[0].date_input("From", one_year_ago, key="port_opt")
+end_date_port_opt = cols_tickers_from_to_capital[1].date_input("To", today, key="port_opt")
+capital = cols_tickers_from_to_capital[2].number_input('Capital', value=10000)
 
 if "Portfolios" not in st.session_state:
   st.session_state["Portfolios"] = {}
