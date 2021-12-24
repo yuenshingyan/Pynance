@@ -289,7 +289,7 @@ cleaned_weights_performance_stats.loc[:, 'Min Volatility'] = cleaned_weights_per
 cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] * capital
 
 st.subheader("Optimized Portfolio")
-st.dataframe(cleaned_weights_performance_stats.style.format("{.2:}"))
+st.dataframe(cleaned_weights_performance_stats.style.format("{:.2}"))
 
 
 cols_value_at_risk = st.columns(2)
