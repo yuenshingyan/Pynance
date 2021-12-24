@@ -248,23 +248,12 @@ if ticker.isupper() and len(ticker) <= 5:
 # ----------------------------------------------------------------Portfolio Optimization---------------------------------------------------------------------------
 st.header("Portfolio Optimization")
 cols_tickers_from_to_capital = st.columns(3)
-cols_load_save = st.columns(2)
 
 default_tickers = "FB, AAPL, AMZN, NFLX, GOOG"
 tickers = st.text_input(label="Please type in a portfolio", value=default_tickers)
 start_date_port_opt = cols_tickers_from_to_capital[0].date_input("From", one_year_ago, key="port_opt")
 end_date_port_opt = cols_tickers_from_to_capital[1].date_input("To", today, key="port_opt")
 capital = cols_tickers_from_to_capital[2].number_input('Capital', value=10000)
-
-cols_load_save[0].subheader("Save Portfolio") 
-cols_load_save[1].subheader("Load a Portfolio") 
-port_name = cols_load_save[0].text_input("Name your portfolio", key="save_portfolio")
-option = cols_load_save[1].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
-
-if port_name != "":
-  if port_name not in st.session_state["Portfolios"]:
-    st.session_state["Portfolios"][port_name] = tickers
-    st.write("Porfolio Saved Successfully!")
 
 acp, warning = get_adj_close_prices(tickers.split(","), start_date_port_opt, end_date_port_opt)
 
@@ -290,6 +279,18 @@ cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_perform
 
 st.subheader("Optimized Portfolio")
 st.dataframe(cleaned_weights_performance_stats.style.format("{:,.2f}"))
+
+# Save Load port
+cols_load_save = st.columns(2)
+cols_load_save[0].subheader("Save Portfolio") 
+cols_load_save[1].subheader("Load a Portfolio") 
+port_name = cols_load_save[0].text_input("Name your portfolio", key="save_portfolio")
+option = cols_load_save[1].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
+
+if port_name != "":
+  if port_name not in st.session_state["Portfolios"]:
+    st.session_state["Portfolios"][port_name] = tickers
+    st.write("Porfolio Saved Successfully!")
 
 # -------------------------------------------------------------Value At Risk---------------------------------------------------------------------------------------
 cols_value_at_risk = st.columns(2)
