@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(historical_price, ticker):
+def regime_detection(historical_price, ticker, year_range):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -119,7 +119,7 @@ def regime_detection(historical_price, ticker):
 
     inc = historical_price["Adj Close"] > historical_price["Open"]
     dec = historical_price["Open"] > historical_price["Adj Close"]
-    w = 12 * 60 * 60 * 1000 # half day in ms
+    w = 12 * 60 * 60 * 1000 / year_range # half day in ms
 
     TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
@@ -129,16 +129,16 @@ def regime_detection(historical_price, ticker):
     p_historical.grid.grid_line_alpha=0.3
 
     p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
-    p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=24*60*60*1000, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
-    p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=24*60*60*1000, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
+    p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
+    p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
     # Log Return with High Volatility
     p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
     p_log_ret.xaxis.major_label_orientation = pi/4
     p_log_ret.grid.grid_line_alpha=0.3
 
-    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=20*60*60*1000, color="#FFDB46", line_color="black")
-    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=20*60*60*1000, line_color="black")
+    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
+    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
 
     # show the results
     p_historical.legend.location = "top_left"
@@ -263,7 +263,7 @@ for b, bv in zip(buttons, buttons_val):
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
-    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, ticker)
+    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, bv)
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
 
