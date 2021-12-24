@@ -258,10 +258,10 @@ capital = cols_tickers_from_to_capital[2].number_input('Capital', value=10000)
 
 cols_load_save[0].subheader("Save Portfolio") 
 cols_load_save[1].subheader("Load a Portfolio") 
+port_name = cols_load_save[0].text_input("Name your portfolio", key="save_portfolio")
 option = cols_load_save[1].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
-port_name = cols_load_save[1].text_input("Name your portfolio")
 
-if cols_load_save[1].text_input("Name your portfolio"):
+if cols_load_save[1].text_input("Name your portfolio", key="save_portfolio"):
   if port_name not in st.session_state["Portfolios"]:
     st.session_state["Portfolios"][port_name] = tickers
     st.write("Porfolio Saved Successfully!")
