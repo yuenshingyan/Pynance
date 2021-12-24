@@ -240,8 +240,8 @@ cols_regime_detection2 = st.columns(5)
 one_year_ago = today - datetime.timedelta(365)
 
 ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
-start_date = cols_regime_detection[6].date_input("From", one_year_ago)
-end_date = cols_regime_detection[7].date_input("To", today, max_value=today)  
+start_date = cols_regime_detection[1].date_input("From", one_year_ago)
+end_date = cols_regime_detection[2].date_input("To", today, max_value=today)  
 
 one_week = cols_regime_detection2[1].button("1 Week")
 one_month = cols_regime_detection2[2].button("1 Month")
