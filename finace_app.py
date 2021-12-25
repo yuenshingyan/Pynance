@@ -2,7 +2,7 @@
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
 from bokeh.layouts import column
-from bokeh.models import ColumnDataSource, Legend, Band
+from bokeh.models import ColumnDataSource, Legend, Band, Span
 from datetime import date
 import datetime
 from hmmlearn import hmm
@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(historical_price, bollinger_bands="No"):
+def regime_detection(historical_price, bollinger_bands="No", RSI="No"):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -151,6 +151,18 @@ def regime_detection(historical_price, bollinger_bands="No"):
 
     p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
     p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
+    
+    # Relative Strength Index
+    if RSI == "Yes":
+      p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+      p_log_ret.xaxis.major_label_orientation = pi/4
+      p_log_ret.grid.grid_line_alpha=0.3
+      
+      rsi = relative_strength_index(historical_price)
+      p_log_ret.line(RSI.index, RSI, legend_label="Temp.", line_width=2)
+      upper_threshold = Span(location=70, dimension='width', line_color='black', line_width=1, fill_alpha=0.4)
+      lower_threshold = Span(location=30, dimension='width', line_color='black', line_width=1, fill_alpha=0.4)
+      p_log_ret.renderers.extend([upper_threshold, lower_threshold])
 
     # show the results
     p_historical.legend.location = "top_left"
@@ -225,6 +237,16 @@ def bollinger(historical_price, window=7, m=2):
 
   return bollinger_upper, bollinger_lower
 
+def relative_strength_index(historical_price):
+  historical_return = historical_price["Adj Close"].pct_change(-1).dropna()
+  avg_gain = pd.Series(np.where(historical_return > 0, historical_return, 0)).rolling(14).mean()
+  avg_loss = pd.Series(np.where(historical_return < 0, abs(historical_return), 0)).rolling(14).mean()
+  RSI = 100 - (100/(1 + avg_gain/avg_loss))
+  RSI = RSI.append(pd.Series(np.nan))
+  RSI.index = goog.index  
+  
+  return RSI
+
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 st.set_page_config(
@@ -279,6 +301,7 @@ five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
 bb = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
+RSI = cols_regime_detection3[1].select_slider('RSI', options=['No', 'Yes'], value="No")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
@@ -291,7 +314,7 @@ for b, bv in zip(buttons, buttons_val):
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
-    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, bb)
+    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, bb, RSI)
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
 
