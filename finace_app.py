@@ -284,7 +284,7 @@ st.title('Pynance')
 st.header("Regime Detection")
 cols_regime_detection = st.columns(3)
 cols_regime_detection2 = st.columns(8)
-cols_regime_detection3 = st.columns(12)
+cols_regime_detection3 = st.columns(16)
 one_year_ago = today - datetime.timedelta(365)
 
 ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
@@ -301,7 +301,7 @@ five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
 bb = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
-RSI = cols_regime_detection3[1].select_slider('RSI', options=['No', 'Yes'], value="No")
+RSI = cols_regime_detection3[2].select_slider('RSI', options=['No', 'Yes'], value="No")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
