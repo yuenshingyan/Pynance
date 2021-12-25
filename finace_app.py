@@ -2,7 +2,7 @@
 from bokeh.plotting import figure, show
 from bokeh.io import output_notebook
 from bokeh.layouts import column
-from bokeh.models import ColumnDataSource, Legend
+from bokeh.models import ColumnDataSource, Legend, Band
 from datetime import date
 import datetime
 from hmmlearn import hmm
