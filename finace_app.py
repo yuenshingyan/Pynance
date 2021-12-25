@@ -354,7 +354,8 @@ def money_flow_index(historical_price, threshold_upper=80, threshold_lower=20, w
   RawMoneyFlow = TypicalPrice * historical_price['Volume']
   MoneyFlowRatio = pd.Series(np.where(RawMoneyFlow.diff(1) > 0, RawMoneyFlow, 0)).rolling(14).sum()/pd.Series(np.where(RawMoneyFlow.diff(1) < 0, RawMoneyFlow, 0)).rolling(window).sum()
   MFI = 100 - 100/(1 + MoneyFlowRatio)
-
+  MFI.index = historical_price.index
+  
   return MFI
   
 def con_list(list1):
