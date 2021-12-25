@@ -162,8 +162,8 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
 
       rsi = relative_strength_index(historical_price)
       p_sub_view.line(rsi.index, rsi, line_width=1)
-      upper_threshold = Span(location=70, dimension='width', line_color='#FFDB46', line_width=1, line_alpha=0.8, line_dash='dashed')
-      lower_threshold = Span(location=30, dimension='width', line_width=1, line_alpha=0.8, line_dash='dashed')
+      upper_threshold = Span(location=70, dimension='width', line_color='#FF9933', line_width=1, line_alpha=0.5, line_dash='dashed')
+      lower_threshold = Span(location=30, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
       p_sub_view.renderers.extend([upper_threshold, lower_threshold])
       p_sub_view.yaxis.axis_label = 'RSI (%)'
 
