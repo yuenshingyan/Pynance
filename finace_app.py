@@ -176,22 +176,18 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
       p_historical.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
       p_historical.yaxis.axis_label = 'Volume'
     
+    # Sub View
+    p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+    p_sub_view.xaxis.major_label_orientation = pi/4
+    p_sub_view.grid.grid_line_alpha=0.3
     # Volatility
     if sub_view == "Volitility":
-      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-      p_sub_view.xaxis.major_label_orientation = pi/4
-      p_sub_view.grid.grid_line_alpha=0.3
-
       p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
       p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
       p_sub_view.yaxis.axis_label = 'Return (%)'
 
     # Relative Strength Index
     if sub_view == "RSI":
-      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-      p_sub_view.xaxis.major_label_orientation = pi/4
-      p_sub_view.grid.grid_line_alpha=0.3
-
       rsi = relative_strength_index(historical_price)
       p_sub_view.line(rsi.index, rsi, line_width=1)
       upper_threshold = Span(location=70, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
@@ -199,7 +195,7 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
       p_sub_view.renderers.extend([upper_threshold, lower_threshold])
       p_sub_view.yaxis.axis_label = 'RSI (%)'
 
-    # OBV
+    # On Balance Volume
     elif sub_view == "OBV":
       obv, obv_ema  = on_balance_volume(historical_price)
       green_upper, green_lower, red_upper, red_lower = convergence_divergence(obv, obv_ema)
@@ -207,10 +203,6 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
       green_lower_filtered = con_list(green_lower)
       red_upper_filtered = con_list(red_upper)
       red_lower_filtered = con_list(red_lower)
-
-      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-      p_sub_view.xaxis.major_label_orientation = pi/4
-      p_sub_view.grid.grid_line_alpha=0.3
 
       p_sub_view.line(obv.index, obv, line_width=1, line_color="green")
       p_sub_view.line(obv_ema.index, obv_ema, line_width=1, line_color="red")
@@ -244,6 +236,15 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
     p_historical.yaxis.axis_label = 'Price (USD)'
 
     return column(p_historical, p_sub_view), returns_high_volatility, returns_low_volatility
+  
+    # Stochastic Oscillator
+    elif sub_view == "SO":
+      so = stochastic_oscillator(historical_price)
+      p_sub_view.line(so.index, so, line_width=1)
+      upper_threshold = Span(location=80, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
+      lower_threshold = Span(location=20, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
+      p_sub_view.renderers.extend([upper_threshold, lower_threshold])
+      p_sub_view.yaxis.axis_label = 'SO (%)'
   
   except:
     return None, None, None
@@ -462,7 +463,7 @@ ten_years = cols_regime_detection2[7].button("10 Years")
 
 BB = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
 ikh = cols_regime_detection3[2].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
-sub_view = cols_regime_detection3[4].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV'], value="Volitility")
+sub_view = cols_regime_detection3[4].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO'], value="Volitility")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
