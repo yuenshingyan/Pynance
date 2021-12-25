@@ -134,13 +134,13 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
     
     # Volatility
     if sub_view == "Volitility":
-    p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-    p_sub_view.xaxis.major_label_orientation = pi/4
-    p_sub_view.grid.grid_line_alpha=0.3
+      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+      p_sub_view.xaxis.major_label_orientation = pi/4
+      p_sub_view.grid.grid_line_alpha=0.3
 
-    p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
-    p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
-    p_sub_view.yaxis.axis_label = 'Return (%)'
+      p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
+      p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
+      p_sub_view.yaxis.axis_label = 'Return (%)'
     
     # Bollinger Bands
     if bollinger_bands == "Yes":
