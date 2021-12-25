@@ -143,6 +143,45 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
 
       band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="#99CCFF", fill_alpha=0.4)
       p_historical.add_layout(band)
+      
+    if ikh == "Yes":
+      senkou_a, senkou_b = ichimoku_kinko_hyo(goog)
+      green_upper, green_lower, red_upper, red_lower = convergence_divergence(senkou_a, senkou_b)
+      
+      green_upper_filtered = con_list(green_upper)
+      green_lower_filtered = con_list(green_lower)
+      red_upper_filtered = con_list(red_upper)
+      red_lower_filtered = con_list(red_lower)
+
+      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+      p_sub_view.xaxis.major_label_orientation = pi/4
+      p_sub_view.grid.grid_line_alpha=0.3
+
+      p_sub_view.line(obv.index, obv, line_width=1, line_color="green")
+      p_sub_view.line(obv_ema.index, obv_ema, line_width=1, line_color="red")
+
+      for lower, upper in zip(green_lower_filtered, green_upper_filtered):
+        green_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
+
+        green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
+        p_sub_view.add_layout(green_band)
+
+      for lower, upper in zip(red_lower_filtered, red_upper_filtered):
+        red_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
+
+        red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
+        p_sub_view.add_layout(red_band)
+    
+      p_sub_view.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
+      p_sub_view.yaxis.axis_label = 'Volume'
     
     # Volatility
     if sub_view == "Volitility":
@@ -324,6 +363,26 @@ def con_list(list1):
   res.append(list1[start+1:])
 
   return res
+
+def ichimoku_kinko_hyo(historical_price, tenkan_window=9, kijun_window=26, senkou_b_window=52):
+  # Tenkan-Sen
+  tenkan_sen = (historical_price['High'].rolling(tenkan_window).max() + historical_price['Low'].rolling(tenkan_window).min())/2
+
+  # Kijun-Sen
+  kijun_sen = (historical_price['High'].rolling(kijun_window).max() + historical_price['Low'].rolling(kijun_window).min())/2
+
+  # Chikou Span
+  chikou_span = historical_price['Close'].shift(-26)
+
+  # Senkou A
+  senkou_a = ((tenkan_sen + kijun_sen)/2).shift(26)
+
+  # Senkou B
+  senkou_b = ((historical_price['High'].rolling(senkou_b_window).max() + historical_price['Low'].rolling(senkou_b_window).min())/2).shift(52)
+
+  shade = np.where(senkou_a >= senkou_b, 1, 0)
+
+  return senkou_a, senkou_b
 
 def convergence_divergence(line1, line2):
   green_upper = []
