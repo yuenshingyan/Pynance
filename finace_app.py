@@ -521,7 +521,7 @@ five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
 SMA = cols_regime_detection3[0].select_slider('Simple Moving Average', options=['No', 'Yes'], value="No")
-BB = cols_regime_detection3[2].select_slider('Bollinger', options=['No', 'Yes'], value="No")
+BB = cols_regime_detection3[2].select_slider('Bollingers Band', options=['No', 'Yes'], value="No")
 ikh = cols_regime_detection3[4].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
 sub_view = cols_regime_detection3[6].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO', 'MFI'], value="Volitility")
 
