@@ -238,6 +238,15 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
       lower_threshold = Span(location=20, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
       p_sub_view.renderers.extend([upper_threshold, lower_threshold])
       p_sub_view.yaxis.axis_label = 'SO (%)'
+      
+    # Money Flow Index
+    elif sub_view == "MFI":
+      mfi = money_flow_index(historical_price)
+      p_sub_view.line(mfi.index, mfi, line_width=1)
+      upper_threshold = Span(location=80, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
+      lower_threshold = Span(location=20, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
+      p_sub_view.renderers.extend([upper_threshold, lower_threshold])
+      p_sub_view.yaxis.axis_label = 'MFI (%)'
 
     # show the results
     p_historical.legend.location = "top_left"
@@ -339,6 +348,14 @@ def on_balance_volume(historical_price, window=20):
   obv.index = historical_price.index
 
   return obv, obv_ema
+
+def money_flow_index(historical_price, threshold_upper=80, threshold_lower=20, window=14):
+  TypicalPrice = (historical_price['High'] + historical_price['Low'] + historical_price['Close'])/3
+  RawMoneyFlow = TypicalPrice * historical_price['Volume']
+  MoneyFlowRatio = pd.Series(np.where(RawMoneyFlow.diff(1) > 0, RawMoneyFlow, 0)).rolling(14).sum()/pd.Series(np.where(RawMoneyFlow.diff(1) < 0, RawMoneyFlow, 0)).rolling(window).sum()
+  MFI = 100 - 100/(1 + MoneyFlowRatio)
+
+  return MFI
   
 def con_list(list1):
   res = []
@@ -471,7 +488,7 @@ ten_years = cols_regime_detection2[7].button("10 Years")
 
 BB = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
 ikh = cols_regime_detection3[2].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
-sub_view = cols_regime_detection3[4].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO'], value="Volitility")
+sub_view = cols_regime_detection3[4].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO', 'MFI'], value="Volitility")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
