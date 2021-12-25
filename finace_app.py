@@ -145,20 +145,13 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
       p_historical.add_layout(band)
       
     if ikh == "Yes":
-      senkou_a, senkou_b = ichimoku_kinko_hyo(goog)
+      senkou_a, senkou_b = ichimoku_kinko_hyo(historical_price)
       green_upper, green_lower, red_upper, red_lower = convergence_divergence(senkou_a, senkou_b)
       
       green_upper_filtered = con_list(green_upper)
       green_lower_filtered = con_list(green_lower)
       red_upper_filtered = con_list(red_upper)
       red_lower_filtered = con_list(red_lower)
-
-      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-      p_sub_view.xaxis.major_label_orientation = pi/4
-      p_sub_view.grid.grid_line_alpha=0.3
-
-      p_sub_view.line(obv.index, obv, line_width=1, line_color="green")
-      p_sub_view.line(obv_ema.index, obv_ema, line_width=1, line_color="red")
 
       for lower, upper in zip(green_lower_filtered, green_upper_filtered):
         green_source = ColumnDataSource({
@@ -168,7 +161,7 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
               })
 
         green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
-        p_sub_view.add_layout(green_band)
+        p_historical.add_layout(green_band)
 
       for lower, upper in zip(red_lower_filtered, red_upper_filtered):
         red_source = ColumnDataSource({
@@ -178,10 +171,10 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
               })
 
         red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
-        p_sub_view.add_layout(red_band)
+        p_historical.add_layout(red_band)
     
-      p_sub_view.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
-      p_sub_view.yaxis.axis_label = 'Volume'
+      p_historical.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
+      p_historical.yaxis.axis_label = 'Volume'
     
     # Volatility
     if sub_view == "Volitility":
