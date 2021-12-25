@@ -168,7 +168,7 @@ def regime_detection(historical_price, bollinger_bands="No", RSI="No", OBV="No")
 
   # OBV
   if OBV == "Yes":
-    obv, obv_ema, green_upper, green_lower, red_upper, red_lower = obv(goog)
+    obv, obv_ema, green_upper, green_lower, red_upper, red_lower = obv(historical_price)
     green_upper_filtered = con_list(green_upper)
     green_lower_filtered = con_list(green_lower)
     red_upper_filtered = con_list(red_upper)
