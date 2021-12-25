@@ -243,7 +243,7 @@ def relative_strength_index(historical_price):
   avg_loss = pd.Series(np.where(historical_return < 0, abs(historical_return), 0)).rolling(14).mean()
   RSI = 100 - (100/(1 + avg_gain/avg_loss))
   RSI = RSI.append(pd.Series(np.nan))
-  RSI.index = goog.index  
+  RSI.index = historical_price.index  
   
   return RSI
 
