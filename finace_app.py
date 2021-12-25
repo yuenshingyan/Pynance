@@ -340,6 +340,12 @@ def consecutive_list(iterable):
   return n_grp, group_duration_median, group_duration_mean, net_return
 
 # -------------------------------------------------------------------Technical Analysis-----------------------------------------------------------------------------
+def simple_moving_average(historical_price, window_slow=200, window_fast=50):
+  slow_sma = historical_price['Close'].rolling(window_slow).mean()
+  fast_sma = historical_price['Close'].rolling(window_fast).mean()   
+
+  return slow_sma, fast_sma
+
 
 def bollinger(historical_price, window=7, m=2):
   historical_price.loc[:, 'Typical Price'] = (historical_price["High"] + historical_price["Low"] + historical_price["Adj Close"]) / 3
