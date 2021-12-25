@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(historical_price, bollinger_bands="No", RSI="No", OBV="No"):
+def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitility"):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -131,7 +131,17 @@ def regime_detection(historical_price, bollinger_bands="No", RSI="No", OBV="No")
     p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
     p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
     p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
+    
+    # Volatility
+    if sub_view == "Volitility"
+    p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+    p_log_ret.xaxis.major_label_orientation = pi/4
+    p_log_ret.grid.grid_line_alpha=0.3
 
+    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
+    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
+    p_log_ret.yaxis.axis_label = 'Return (%)'
+    
     # Bollinger Bands
     if bollinger_bands == "Yes":
       bollinger_upper, bollinger_lower = bollinger(historical_price)
@@ -144,17 +154,8 @@ def regime_detection(historical_price, bollinger_bands="No", RSI="No", OBV="No")
       band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="#99CCFF", fill_alpha=0.4)
       p_historical.add_layout(band)
 
-    # Log Return with High Volatility
-    p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-    p_log_ret.xaxis.major_label_orientation = pi/4
-    p_log_ret.grid.grid_line_alpha=0.3
-
-    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
-    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
-    p_log_ret.yaxis.axis_label = 'Return (%)'
-
     # Relative Strength Index
-    if RSI == "Yes":
+    if sub_view == "RSI":
       p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
       p_log_ret.xaxis.major_label_orientation = pi/4
       p_log_ret.grid.grid_line_alpha=0.3
@@ -167,7 +168,7 @@ def regime_detection(historical_price, bollinger_bands="No", RSI="No", OBV="No")
       p_log_ret.yaxis.axis_label = 'RSI (%)'
 
     # OBV
-    if OBV == "Yes":
+    elif sub_view == "OBV":
       obv, obv_ema, green_upper, green_lower, red_upper, red_lower = on_balance_volume(historical_price)
       green_upper_filtered = con_list(green_upper)
       green_lower_filtered = con_list(green_lower)
@@ -401,8 +402,8 @@ five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
 BB = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
-RSI = cols_regime_detection3[2].select_slider('RSI', options=['No', 'Yes'], value="No")
-OBV = cols_regime_detection3[4].select_slider('OBV', options=['No', 'Yes'], value="No")
+RSI = cols_regime_detection3[2].button('RSI')
+OBV = cols_regime_detection3[4].button('OBV')
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
@@ -410,20 +411,17 @@ for b, bv in zip(buttons, buttons_val):
   if b:
     start_date = today - datetime.timedelta(bv)
     end_date = today
-
-button_list = [BB, RSI, OBV]
-for i in button_list:
-  if i == "Yes":
-    button_list.remove(i)
-    
-for i in button_list:
-  i = "No"
     
 # Regime Detection Inputs
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
-    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, RSI, OBV)
+    if RSI:
+      p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, RSI)
+    
+    elif OBV:
+      p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, OBV)
+      
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
 
