@@ -141,7 +141,7 @@ def regime_detection(historical_price, bollinger_bands="No"):
           'upper':bollinger_upper
           })
 
-      band = Band(base='base', lower='lower', upper='upper', source=source, fill_alpha=0.5)
+      band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="blue", fill_alpha=0.5)
       p_historical.add_layout(band)
 
     # Log Return with High Volatility
