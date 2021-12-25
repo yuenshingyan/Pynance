@@ -417,10 +417,10 @@ if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
     if RSI:
-      p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, RSI)
+      p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, "RSI")
     
     elif OBV:
-      p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, OBV)
+      p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, "OBV")
       
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
