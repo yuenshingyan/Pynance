@@ -169,7 +169,8 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
 
     # OBV
     elif sub_view == "OBV":
-      obv, obv_ema, green_upper, green_lower, red_upper, red_lower = on_balance_volume(historical_price)
+      obv, obv_ema  = on_balance_volume(historical_price)
+      green_upper, green_lower, red_upper, red_lower = convergence_divergence(obv, obv_ema)
       green_upper_filtered = con_list(green_upper)
       green_lower_filtered = con_list(green_lower)
       red_upper_filtered = con_list(red_upper)
@@ -304,34 +305,7 @@ def on_balance_volume(historical_price, window=20):
   obv = pd.Series(obv)
   obv.index = historical_price.index
 
-  green_upper = []
-  green_lower = []
-  red_upper = []
-  red_lower = []
-  for i in range(len(obv)):
-    if obv[i] >= obv_ema[i]:
-      green_upper.append(obv[i])
-      green_lower.append(obv_ema[i])
-      red_upper.append(np.nan)
-      red_lower.append(np.nan)
-
-    else:
-      red_upper.append(obv[i])
-      red_lower.append(obv_ema[i])
-      green_upper.append(np.nan)
-      green_lower.append(np.nan)
-      
-  green_upper = pd.Series(green_upper)
-  green_lower = pd.Series(green_lower)
-  red_upper = pd.Series(red_upper)
-  red_lower = pd.Series(red_lower)
-
-  green_upper.index = obv.index
-  green_lower.index = obv.index
-  red_upper.index = obv.index
-  red_lower.index = obv.index
-
-  return obv, obv_ema, green_upper, green_lower, red_upper, red_lower
+  return obv, obv_ema
   
 def con_list(list1):
   res = []
@@ -350,6 +324,36 @@ def con_list(list1):
   res.append(list1[start+1:])
 
   return res
+
+def convergence_divergence(line1, line2):
+  green_upper = []
+  green_lower = []
+  red_upper = []
+  red_lower = []
+  for i in range(len(line1)):
+    if line1[i] >= line2[i]:
+      green_upper.append(line1[i])
+      green_lower.append(line2[i])
+      red_upper.append(np.nan)
+      red_lower.append(np.nan)
+
+    else:
+      red_upper.append(line1[i])
+      red_lower.append(line2[i])
+      green_upper.append(np.nan)
+      green_lower.append(np.nan)
+      
+  green_upper = pd.Series(green_upper)
+  green_lower = pd.Series(green_lower)
+  red_upper = pd.Series(red_upper)
+  red_lower = pd.Series(red_lower)
+
+  green_upper.index = line1.index
+  green_lower.index = line1.index
+  red_upper.index = line1.index
+  red_lower.index = line1.index
+
+  return green_upper, green_lower, red_upper, red_lower
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
