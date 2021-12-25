@@ -201,7 +201,15 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
 
         red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
         p_sub_view.add_layout(red_band)
+        
+#        legend = Legend(items=[
+#             ("sin(x)",   [r0, r1]),
+#             ("2*sin(x)", [r2]),
+#             ("3*sin(x)", [r3, r4])
+#         ], location=(0, -30))
 
+#         p_sub_view.add_layout(legend, 'right')
+    
     # show the results
     p_historical.legend.location = "top_left"
     p_historical.xaxis.visible = False
@@ -402,8 +410,7 @@ five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
 BB = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
-RSI = cols_regime_detection3[2].button('RSI')
-OBV = cols_regime_detection3[4].button('OBV')
+sub_view = cols_regime_detection3[2].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV'], value="Volitility")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
