@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(historical_price, sma, bollinger_bands="No", ikh="No", sub_view="Volitility"):
+def regime_detection(historical_price, SMA, bollinger_bands="No", ikh="No", sub_view="Volitility"):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -133,7 +133,7 @@ def regime_detection(historical_price, sma, bollinger_bands="No", ikh="No", sub_
   p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
   # Simple Moving Average
-  if sma == "Yes":
+  if SMA == "Yes":
     slow_sma, fast_sma = simple_moving_average(historical_price)
     green_upper, green_lower, red_upper, red_lower = convergence_divergence(fast_sma, slow_sma)
 
