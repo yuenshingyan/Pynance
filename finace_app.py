@@ -131,7 +131,40 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
     p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
     p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
     p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
+    
+    # Simple Moving Average
+    if sma == "Yes":
+      slow_sma, fast_sma = simple_moving_average(historical_price)
+      green_upper, green_lower, red_upper, red_lower = convergence_divergence(slow_sma, fast_sma)
 
+      green_upper_filtered = con_list(green_upper)
+      green_lower_filtered = con_list(green_lower)
+      red_upper_filtered = con_list(red_upper)
+      red_lower_filtered = con_list(red_lower)
+
+      for lower, upper in zip(green_lower_filtered, green_upper_filtered):
+        green_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
+
+        green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
+        p_historical.add_layout(green_band)
+
+      for lower, upper in zip(red_lower_filtered, red_upper_filtered):
+        red_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
+
+        red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
+        p_historical.add_layout(red_band)
+
+      p_historical.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
+      p_historical.yaxis.axis_label = 'Moving Avg.'
+      
     # Bollinger Bands
     if bollinger_bands == "Yes":
       bollinger_upper, bollinger_lower = bollinger(historical_price)
@@ -487,9 +520,10 @@ three_years = cols_regime_detection2[5].button("3 Years")
 five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
-BB = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
-ikh = cols_regime_detection3[2].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
-sub_view = cols_regime_detection3[4].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO', 'MFI'], value="Volitility")
+SMA = cols_regime_detection3[0].select_slider('Simple Moving Average', options=['No', 'Yes'], value="No")
+BB = cols_regime_detection3[2].select_slider('Bollinger', options=['No', 'Yes'], value="No")
+ikh = cols_regime_detection3[4].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
+sub_view = cols_regime_detection3[6].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO', 'MFI'], value="Volitility")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
