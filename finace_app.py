@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitility"):
+def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view="Volitility"):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -451,7 +451,7 @@ st.title('Pynance')
 st.header("Regime Detection")
 cols_regime_detection = st.columns(3)
 cols_regime_detection2 = st.columns(8)
-cols_regime_detection3 = st.columns([.75, .5, 4])
+cols_regime_detection3 = st.columns([.75, .5, 3, .5, 3])
 one_year_ago = today - datetime.timedelta(365)
 
 ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
@@ -468,6 +468,7 @@ five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
 BB = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
+ikh = cols_regime_detection3[0].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
 sub_view = cols_regime_detection3[2].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV'], value="Volitility")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
@@ -481,7 +482,7 @@ for b, bv in zip(buttons, buttons_val):
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
-    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, sub_view)
+    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, ikh, sub_view)
       
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
