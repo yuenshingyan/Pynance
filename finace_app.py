@@ -131,17 +131,7 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
     p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
     p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
     p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
-    
-    # Volatility
-    if sub_view == "Volitility":
-      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-      p_sub_view.xaxis.major_label_orientation = pi/4
-      p_sub_view.grid.grid_line_alpha=0.3
-
-      p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
-      p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
-      p_sub_view.yaxis.axis_label = 'Return (%)'
-    
+      
     # Bollinger Bands
     if bollinger_bands == "Yes":
       bollinger_upper, bollinger_lower = bollinger(historical_price)
@@ -153,6 +143,16 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
 
       band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="#99CCFF", fill_alpha=0.4)
       p_historical.add_layout(band)
+    
+    # Volatility
+    if sub_view == "Volitility":
+      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+      p_sub_view.xaxis.major_label_orientation = pi/4
+      p_sub_view.grid.grid_line_alpha=0.3
+
+      p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
+      p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
+      p_sub_view.yaxis.axis_label = 'Return (%)'
 
     # Relative Strength Index
     if sub_view == "RSI":
@@ -421,6 +421,9 @@ if ticker.isupper() and len(ticker) <= 5:
     
     elif OBV:
       p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, "OBV")
+      
+    else:
+      p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, "Volitility")
       
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
