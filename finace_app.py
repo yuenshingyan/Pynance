@@ -179,8 +179,8 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
       p_sub_view.xaxis.major_label_orientation = pi/4
       p_sub_view.grid.grid_line_alpha=0.3
 
-      p_sub_view.line(obv.index, obv, legend_label="OBV", line_width=1, line_color="green")
-      p_sub_view.line(obv_ema.index, obv_ema, legend_label="OBV_EMA", line_width=1, line_color="red")
+      p_sub_view.line(obv.index, obv, line_width=1, line_color="green")
+      p_sub_view.line(obv_ema.index, obv_ema, line_width=1, line_color="red")
 
       for lower, upper in zip(green_lower_filtered, green_upper_filtered):
         green_source = ColumnDataSource({
@@ -203,6 +203,7 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
         p_sub_view.add_layout(red_band)
     
     p_sub_view.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
+    p_sub_view.yaxis.axis_label = 'Volume'
     
     # show the results
     p_historical.legend.location = "top_left"
