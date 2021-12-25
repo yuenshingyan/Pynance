@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(historical_price, bollinger_bands="No", RSI="No"):
+def regime_detection(historical_price, bollinger_bands="No", RSI="No", OBV="No"):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -165,6 +165,41 @@ def regime_detection(historical_price, bollinger_bands="No", RSI="No"):
       lower_threshold = Span(location=30, dimension='width', line_color='black', line_width=1, line_alpha=0.4)
       p_log_ret.renderers.extend([upper_threshold, lower_threshold])
       p_log_ret.yaxis.axis_label = 'RSI (%)'
+      
+    # OBV
+    if OBV == "Yes":
+      obv, obv_ema, green_upper, green_lower, red_upper, red_lower = obv(goog)
+      green_upper_filtered = con_list(green_upper)
+      green_lower_filtered = con_list(green_lower)
+      red_upper_filtered = con_list(red_upper)
+      red_lower_filtered = con_list(red_lower)
+      
+      p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+      p_log_ret.xaxis.major_label_orientation = pi/4
+      p_log_ret.grid.grid_line_alpha=0.3
+      
+      p_log_ret.line(obv.index, obv, legend_label="OBV", line_width=1, line_color="green")
+      p_log_ret.line(obv_ema.index, obv_ema, legend_label="OBV_EMA", line_width=1, line_color="red")
+
+      for lower, upper in zip(green_lower_filtered, green_upper_filtered):
+        green_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
+
+        green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
+        p_log_ret.add_layout(green_band)
+
+      for lower, upper in zip(red_lower_filtered, red_upper_filtered):
+        red_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
+
+        red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
+        p_log_ret.add_layout(red_band)
 
     # show the results
     p_historical.legend.location = "top_left"
@@ -247,6 +282,71 @@ def relative_strength_index(historical_price):
   
   return RSI
 
+def obv(historical_price, window=20):
+  obv = []
+  obv.append(0)
+
+  for i in range(1, len(historical_price['Close'])):
+      if historical_price["Close"].iloc[i] > historical_price["Close"].iloc[i-1]:
+          obv.append(obv[-1] + historical_price["Volume"].iloc[i])
+      elif historical_price["Close"].iloc[i] < historical_price["Close"].iloc[i-1]:
+          obv.append(obv[-1] - historical_price["Volume"].iloc[i])
+      else:
+          obv.append(obv[-1])
+
+  obv_ema = pd.Series(obv).ewm(span=window).mean()
+  obv_ema.index = historical_price.index
+
+  obv = pd.Series(obv)
+  obv.index = historical_price.index
+
+  green_upper = []
+  green_lower = []
+  red_upper = []
+  red_lower = []
+  for i in range(len(obv)):
+    if obv[i] >= obv_ema[i]:
+      green_upper.append(obv[i])
+      green_lower.append(obv_ema[i])
+      red_upper.append(np.nan)
+      red_lower.append(np.nan)
+
+    else:
+      red_upper.append(obv[i])
+      red_lower.append(obv_ema[i])
+      green_upper.append(np.nan)
+      green_lower.append(np.nan)
+      
+  green_upper = pd.Series(green_upper)
+  green_lower = pd.Series(green_lower)
+  red_upper = pd.Series(red_upper)
+  red_lower = pd.Series(red_lower)
+
+  green_upper.index = obv.index
+  green_lower.index = obv.index
+  red_upper.index = obv.index
+  red_lower.index = obv.index
+
+  return obv, obv_ema, green_upper, green_lower, red_upper, red_lower
+  
+def con_list(list1):
+  res = []
+  count = 0
+  start = 0
+  for i in range(len(list1)):
+    if i + 1 < len(list1):
+      if np.isnan(list1[i + 1]) and ~np.isnan(list1[i]):
+        res.append(list1[start:i + 1])
+        count += 1
+        start = i + 1
+
+      elif np.isnan(list1[i]) and ~np.isnan(list1[i + 1]):
+        start = i + 1
+
+  res.append(list1[start+1:])
+
+  return res
+
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 st.set_page_config(
@@ -300,8 +400,9 @@ three_years = cols_regime_detection2[5].button("3 Years")
 five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
-bb = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
+BB = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
 RSI = cols_regime_detection3[2].select_slider('RSI', options=['No', 'Yes'], value="No")
+OBV = cols_regime_detection3[2].select_slider('OBV', options=['No', 'Yes'], value="No")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
@@ -314,7 +415,7 @@ for b, bv in zip(buttons, buttons_val):
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
-    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, bb, RSI)
+    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, RSI, OBV)
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
 
