@@ -135,7 +135,7 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
     # Simple Moving Average
     if sma == "Yes":
       slow_sma, fast_sma = simple_moving_average(historical_price)
-      green_upper, green_lower, red_upper, red_lower = convergence_divergence(slow_sma, fast_sma)
+      green_upper, green_lower, red_upper, red_lower = convergence_divergence(fast_sma, slow_sma)
 
       green_upper_filtered = con_list(green_upper)
       green_lower_filtered = con_list(green_lower)
@@ -504,7 +504,7 @@ st.title('Pynance')
 st.header("Regime Detection")
 cols_regime_detection = st.columns(3)
 cols_regime_detection2 = st.columns(8)
-cols_regime_detection3 = st.columns([1.1, .5, 1.1, .5, .75, .5, 3])
+cols_regime_detection3 = st.columns([1.05, .5, 1.05, .5, .75, .5, 3])
 one_year_ago = today - datetime.timedelta(365)
 
 ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
