@@ -230,13 +230,6 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
       p_sub_view.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
       p_sub_view.yaxis.axis_label = 'Volume'
     
-    # show the results
-    p_historical.legend.location = "top_left"
-    p_historical.xaxis.visible = False
-    p_historical.yaxis.axis_label = 'Price (USD)'
-
-    return column(p_historical, p_sub_view), returns_high_volatility, returns_low_volatility
-  
     # Stochastic Oscillator
     elif sub_view == "SO":
       so = stochastic_oscillator(historical_price)
@@ -245,6 +238,13 @@ def regime_detection(historical_price, bollinger_bands="No", ikh="No", sub_view=
       lower_threshold = Span(location=20, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
       p_sub_view.renderers.extend([upper_threshold, lower_threshold])
       p_sub_view.yaxis.axis_label = 'SO (%)'
+    
+    # show the results
+    p_historical.legend.location = "top_left"
+    p_historical.xaxis.visible = False
+    p_historical.yaxis.axis_label = 'Price (USD)'
+
+    return column(p_historical, p_sub_view), returns_high_volatility, returns_low_volatility
   
   except:
     return None, None, None
