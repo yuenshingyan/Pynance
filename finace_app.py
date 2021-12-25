@@ -81,215 +81,215 @@ def regime_detection(historical_price, sma, bollinger_bands="No", ikh="No", sub_
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
   X = log_ret.dropna().to_numpy().reshape(-1, 1)
-#   try:
-  model.fit(X) # Viterbi Algo is used to find the max proba, mean and variance
+  try:
+    model.fit(X) # Viterbi Algo is used to find the max proba, mean and variance
 
-  Z = model.predict(X)
-  Z_Close = np.append(Z, False)
+    Z = model.predict(X)
+    Z_Close = np.append(Z, False)
 
-  Z2 = pd.DataFrame(Z, index=log_ret.dropna().index, columns=['state'])
-  Z2_Close = pd.DataFrame(Z_Close, index=log_ret.index, columns=['state'])
+    Z2 = pd.DataFrame(Z, index=log_ret.dropna().index, columns=['state'])
+    Z2_Close = pd.DataFrame(Z_Close, index=log_ret.index, columns=['state'])
 
-  # dying the returns
-  returns_high_volatility = np.empty(len(Z))
-  returns_low_volatility = np.empty(len(Z))
+    # dying the returns
+    returns_high_volatility = np.empty(len(Z))
+    returns_low_volatility = np.empty(len(Z))
 
-  returns_high_volatility[:] = np.nan
-  returns_low_volatility[:] = np.nan
+    returns_high_volatility[:] = np.nan
+    returns_low_volatility[:] = np.nan
 
-  if len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) > 0:
-    if max(log_ret.dropna()[Z == 1]) > max(log_ret.dropna()[Z == 0]):
-      returns_high_volatility[Z == 1] = log_ret.dropna()[Z == 1]
-      returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+    if len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) > 0:
+      if max(log_ret.dropna()[Z == 1]) > max(log_ret.dropna()[Z == 0]):
+        returns_high_volatility[Z == 1] = log_ret.dropna()[Z == 1]
+        returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
 
-    else:
-      returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
-      returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
+      else:
+        returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+        returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
 
-  elif len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) == 0:
-      returns_high_volatility[Z == 1] = np.array([])
-      returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+    elif len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) == 0:
+        returns_high_volatility[Z == 1] = np.array([])
+        returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
 
-  elif len(log_ret.dropna()[Z == 0]) == 0 and len(log_ret.dropna()[Z == 1]) > 0:
-      returns_high_volatility[Z == 0] = np.array([])
-      returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]    
+    elif len(log_ret.dropna()[Z == 0]) == 0 and len(log_ret.dropna()[Z == 1]) > 0:
+        returns_high_volatility[Z == 0] = np.array([])
+        returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]    
 
-  returns_high_volatility = np.concatenate(([np.nan], returns_high_volatility))
-  returns_low_volatility = np.concatenate(([np.nan], returns_low_volatility))
+    returns_high_volatility = np.concatenate(([np.nan], returns_high_volatility))
+    returns_low_volatility = np.concatenate(([np.nan], returns_low_volatility))
 
-  inc = historical_price["Adj Close"] > historical_price["Open"]
-  dec = historical_price["Open"] > historical_price["Adj Close"]
-  w = 12 * 60 * 60 * 1000 # half day in ms
+    inc = historical_price["Adj Close"] > historical_price["Open"]
+    dec = historical_price["Open"] > historical_price["Adj Close"]
+    w = 12 * 60 * 60 * 1000 # half day in ms
 
-  TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
+    TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
-  # Historical Price
-  p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1300, height=400)
-  p_historical.xaxis.major_label_orientation = pi/4
-  p_historical.grid.grid_line_alpha=0.3
+    # Historical Price
+    p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1300, height=400)
+    p_historical.xaxis.major_label_orientation = pi/4
+    p_historical.grid.grid_line_alpha=0.3
 
-  p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
-  p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
-  p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
+    p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
+    p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
+    p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
-  # Simple Moving Average
-  if sma == "Yes":
-    slow_sma, fast_sma = simple_moving_average(historical_price)
-    green_upper, green_lower, red_upper, red_lower = convergence_divergence(fast_sma, slow_sma)
+    # Simple Moving Average
+    if sma == "Yes":
+      slow_sma, fast_sma = simple_moving_average(historical_price)
+      green_upper, green_lower, red_upper, red_lower = convergence_divergence(fast_sma, slow_sma)
 
-    green_upper_filtered = con_list(green_upper)
-    green_lower_filtered = con_list(green_lower)
-    red_upper_filtered = con_list(red_upper)
-    red_lower_filtered = con_list(red_lower)
+      green_upper_filtered = con_list(green_upper)
+      green_lower_filtered = con_list(green_lower)
+      red_upper_filtered = con_list(red_upper)
+      red_lower_filtered = con_list(red_lower)
 
-    for lower, upper in zip(green_lower_filtered, green_upper_filtered):
-      green_source = ColumnDataSource({
-            'base':lower.index,
-            'lower':lower,
-            'upper':upper
-            })
+      for lower, upper in zip(green_lower_filtered, green_upper_filtered):
+        green_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
 
-      green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
-      p_historical.add_layout(green_band)
+        green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
+        p_historical.add_layout(green_band)
 
-    for lower, upper in zip(red_lower_filtered, red_upper_filtered):
-      red_source = ColumnDataSource({
-            'base':lower.index,
-            'lower':lower,
-            'upper':upper
-            })
+      for lower, upper in zip(red_lower_filtered, red_upper_filtered):
+        red_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
 
-      red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
-      p_historical.add_layout(red_band)
+        red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
+        p_historical.add_layout(red_band)
 
-    p_historical.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
-    p_historical.yaxis.axis_label = 'Moving Avg.'
+      p_historical.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
+      p_historical.yaxis.axis_label = 'Moving Avg.'
 
-  # Bollinger Bands
-  if bollinger_bands == "Yes":
-    bollinger_upper, bollinger_lower = bollinger(historical_price)
-    source = ColumnDataSource({
-        'base':bollinger_lower.index,
-        'lower':bollinger_lower,
-        'upper':bollinger_upper
-        })
+    # Bollinger Bands
+    if bollinger_bands == "Yes":
+      bollinger_upper, bollinger_lower = bollinger(historical_price)
+      source = ColumnDataSource({
+          'base':bollinger_lower.index,
+          'lower':bollinger_lower,
+          'upper':bollinger_upper
+          })
 
-    band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="#99CCFF", fill_alpha=0.4)
-    p_historical.add_layout(band)
+      band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="#99CCFF", fill_alpha=0.4)
+      p_historical.add_layout(band)
 
-  if ikh == "Yes":
-    senkou_a, senkou_b = ichimoku_kinko_hyo(historical_price)
-    green_upper, green_lower, red_upper, red_lower = convergence_divergence(senkou_a, senkou_b)
+    if ikh == "Yes":
+      senkou_a, senkou_b = ichimoku_kinko_hyo(historical_price)
+      green_upper, green_lower, red_upper, red_lower = convergence_divergence(senkou_a, senkou_b)
 
-    green_upper_filtered = con_list(green_upper)
-    green_lower_filtered = con_list(green_lower)
-    red_upper_filtered = con_list(red_upper)
-    red_lower_filtered = con_list(red_lower)
+      green_upper_filtered = con_list(green_upper)
+      green_lower_filtered = con_list(green_lower)
+      red_upper_filtered = con_list(red_upper)
+      red_lower_filtered = con_list(red_lower)
 
-    for lower, upper in zip(green_lower_filtered, green_upper_filtered):
-      green_source = ColumnDataSource({
-            'base':lower.index,
-            'lower':lower,
-            'upper':upper
-            })
+      for lower, upper in zip(green_lower_filtered, green_upper_filtered):
+        green_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
 
-      green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
-      p_historical.add_layout(green_band)
+        green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
+        p_historical.add_layout(green_band)
 
-    for lower, upper in zip(red_lower_filtered, red_upper_filtered):
-      red_source = ColumnDataSource({
-            'base':lower.index,
-            'lower':lower,
-            'upper':upper
-            })
+      for lower, upper in zip(red_lower_filtered, red_upper_filtered):
+        red_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
 
-      red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
-      p_historical.add_layout(red_band)
+        red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
+        p_historical.add_layout(red_band)
 
-    p_historical.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
-    p_historical.yaxis.axis_label = 'Volume'
+      p_historical.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
+      p_historical.yaxis.axis_label = 'Volume'
 
-  # Sub View
-  p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-  p_sub_view.xaxis.major_label_orientation = pi/4
-  p_sub_view.grid.grid_line_alpha=0.3
-  # Volatility
-  if sub_view == "Volitility":
-    p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
-    p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
-    p_sub_view.yaxis.axis_label = 'Return (%)'
+    # Sub View
+    p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+    p_sub_view.xaxis.major_label_orientation = pi/4
+    p_sub_view.grid.grid_line_alpha=0.3
+    # Volatility
+    if sub_view == "Volitility":
+      p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
+      p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
+      p_sub_view.yaxis.axis_label = 'Return (%)'
 
-  # Relative Strength Index
-  if sub_view == "RSI":
-    rsi = relative_strength_index(historical_price)
-    p_sub_view.line(rsi.index, rsi, line_width=1)
-    upper_threshold = Span(location=70, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
-    lower_threshold = Span(location=30, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
-    p_sub_view.renderers.extend([upper_threshold, lower_threshold])
-    p_sub_view.yaxis.axis_label = 'RSI (%)'
+    # Relative Strength Index
+    if sub_view == "RSI":
+      rsi = relative_strength_index(historical_price)
+      p_sub_view.line(rsi.index, rsi, line_width=1)
+      upper_threshold = Span(location=70, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
+      lower_threshold = Span(location=30, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
+      p_sub_view.renderers.extend([upper_threshold, lower_threshold])
+      p_sub_view.yaxis.axis_label = 'RSI (%)'
 
-  # On Balance Volume
-  elif sub_view == "OBV":
-    obv, obv_ema  = on_balance_volume(historical_price)
-    green_upper, green_lower, red_upper, red_lower = convergence_divergence(obv, obv_ema)
-    green_upper_filtered = con_list(green_upper)
-    green_lower_filtered = con_list(green_lower)
-    red_upper_filtered = con_list(red_upper)
-    red_lower_filtered = con_list(red_lower)
+    # On Balance Volume
+    elif sub_view == "OBV":
+      obv, obv_ema  = on_balance_volume(historical_price)
+      green_upper, green_lower, red_upper, red_lower = convergence_divergence(obv, obv_ema)
+      green_upper_filtered = con_list(green_upper)
+      green_lower_filtered = con_list(green_lower)
+      red_upper_filtered = con_list(red_upper)
+      red_lower_filtered = con_list(red_lower)
 
-    p_sub_view.line(obv.index, obv, line_width=1, line_color="green")
-    p_sub_view.line(obv_ema.index, obv_ema, line_width=1, line_color="red")
+      p_sub_view.line(obv.index, obv, line_width=1, line_color="green")
+      p_sub_view.line(obv_ema.index, obv_ema, line_width=1, line_color="red")
 
-    for lower, upper in zip(green_lower_filtered, green_upper_filtered):
-      green_source = ColumnDataSource({
-            'base':lower.index,
-            'lower':lower,
-            'upper':upper
-            })
+      for lower, upper in zip(green_lower_filtered, green_upper_filtered):
+        green_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
 
-      green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
-      p_sub_view.add_layout(green_band)
+        green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
+        p_sub_view.add_layout(green_band)
 
-    for lower, upper in zip(red_lower_filtered, red_upper_filtered):
-      red_source = ColumnDataSource({
-            'base':lower.index,
-            'lower':lower,
-            'upper':upper
-            })
+      for lower, upper in zip(red_lower_filtered, red_upper_filtered):
+        red_source = ColumnDataSource({
+              'base':lower.index,
+              'lower':lower,
+              'upper':upper
+              })
 
-      red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
-      p_sub_view.add_layout(red_band)
+        red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
+        p_sub_view.add_layout(red_band)
 
-    p_sub_view.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
-    p_sub_view.yaxis.axis_label = 'Volume'
+      p_sub_view.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
+      p_sub_view.yaxis.axis_label = 'Volume'
 
-  # Stochastic Oscillator
-  elif sub_view == "SO":
-    so = stochastic_oscillator(historical_price)
-    p_sub_view.line(so.index, so, line_width=1)
-    upper_threshold = Span(location=80, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
-    lower_threshold = Span(location=20, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
-    p_sub_view.renderers.extend([upper_threshold, lower_threshold])
-    p_sub_view.yaxis.axis_label = 'SO (%)'
+    # Stochastic Oscillator
+    elif sub_view == "SO":
+      so = stochastic_oscillator(historical_price)
+      p_sub_view.line(so.index, so, line_width=1)
+      upper_threshold = Span(location=80, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
+      lower_threshold = Span(location=20, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
+      p_sub_view.renderers.extend([upper_threshold, lower_threshold])
+      p_sub_view.yaxis.axis_label = 'SO (%)'
 
-  # Money Flow Index
-  elif sub_view == "MFI":
-    mfi = money_flow_index(historical_price)
-    p_sub_view.line(mfi.index, mfi, line_width=1)
-    upper_threshold = Span(location=80, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
-    lower_threshold = Span(location=20, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
-    p_sub_view.renderers.extend([upper_threshold, lower_threshold])
-    p_sub_view.yaxis.axis_label = 'MFI (%)'
+    # Money Flow Index
+    elif sub_view == "MFI":
+      mfi = money_flow_index(historical_price)
+      p_sub_view.line(mfi.index, mfi, line_width=1)
+      upper_threshold = Span(location=80, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5, line_dash='dashed')
+      lower_threshold = Span(location=20, dimension='width', line_width=1, line_alpha=0.5, line_dash='dashed')
+      p_sub_view.renderers.extend([upper_threshold, lower_threshold])
+      p_sub_view.yaxis.axis_label = 'MFI (%)'
 
-  # show the results
-  p_historical.legend.location = "top_left"
-  p_historical.xaxis.visible = False
-  p_historical.yaxis.axis_label = 'Price (USD)'
+    # show the results
+    p_historical.legend.location = "top_left"
+    p_historical.xaxis.visible = False
+    p_historical.yaxis.axis_label = 'Price (USD)'
 
-  return column(p_historical, p_sub_view), returns_high_volatility, returns_low_volatility
+    return column(p_historical, p_sub_view), returns_high_volatility, returns_low_volatility
   
-#   except:
-#     return None, None, None
+  except:
+    return None, None, None
 
 def var(ret, initial_investment, conf_level=.05):
   cov_matrix = ret.cov()
@@ -522,7 +522,7 @@ ten_years = cols_regime_detection2[7].button("10 Years")
 
 SMA = cols_regime_detection3[0].select_slider('Simple Moving Average', options=['No', 'Yes'], value="No")
 BB = cols_regime_detection3[2].select_slider('Bollingers Band', options=['No', 'Yes'], value="No")
-ikh = cols_regime_detection3[4].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
+IKH = cols_regime_detection3[4].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
 sub_view = cols_regime_detection3[6].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO', 'MFI'], value="Volitility")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
@@ -536,7 +536,7 @@ for b, bv in zip(buttons, buttons_val):
 if ticker.isupper() and len(ticker) <= 5:
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   if len(historical_price) > 1:
-    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, BB, ikh, sub_view)
+    p, returns_high_volatility, returns_low_volatility = regime_detection(historical_price, SMA, BB, IKH, sub_view)
       
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
