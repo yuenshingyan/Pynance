@@ -402,7 +402,7 @@ ten_years = cols_regime_detection2[7].button("10 Years")
 
 BB = cols_regime_detection3[0].select_slider('Bollinger', options=['No', 'Yes'], value="No")
 RSI = cols_regime_detection3[2].select_slider('RSI', options=['No', 'Yes'], value="No")
-OBV = cols_regime_detection3[2].select_slider('OBV', options=['No', 'Yes'], value="No")
+OBV = cols_regime_detection3[4].select_slider('OBV', options=['No', 'Yes'], value="No")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
