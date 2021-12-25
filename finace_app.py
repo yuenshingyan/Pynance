@@ -212,6 +212,8 @@ def consecutive_list(iterable):
 
   return n_grp, group_duration_median, group_duration_mean, net_return
 
+# -------------------------------------------------------------------Technical Analysis-----------------------------------------------------------------------------
+
 def bollinger(historical_price, window=7, m=2):
   historical_price.loc[:, 'Typical Price'] = (historical_price["High"] + historical_price["Low"] + historical_price["Adj Close"]) / 3
   
@@ -221,15 +223,7 @@ def bollinger(historical_price, window=7, m=2):
   bollinger_upper = bollinger_sma + bollinger_std * m
   bollinger_lower = bollinger_sma - bollinger_std * m
 
-  bollinger_sell = np.where(historical_price['Adj Close'] >= bollinger_upper, 1, np.nan) * historical_price['Adj Close']
-  bollinger_buy = np.where(historical_price['Adj Close'] <= bollinger_lower, 1, np.nan) * historical_price['Adj Close']
-
-  is_invested_bollinger = np.where(bollinger_sell >= 0, False, True)
-  log_ret = np.log1p(historical_price["Adj Close"].pct_change(-1))
-  log_ret_bollinger = is_invested_bollinger * log_ret
-  ret = np.exp(sum(log_ret_bollinger.dropna())) - 1
-
-  return bollinger_upper, bollinger_lower, ret
+  return bollinger_upper, bollinger_lower
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -284,7 +278,7 @@ three_years = cols_regime_detection2[5].button("3 Years")
 five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
-bb = cols_regime_detection3[0].select_slider('', options=['No', 'Yes'], value="No")
+bb = cols_regime_detection3[0].select_slider('Bollinger Band', options=['No', 'Yes'], value="No")
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
