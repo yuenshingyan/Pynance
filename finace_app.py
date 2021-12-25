@@ -202,7 +202,7 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
         red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
         p_sub_view.add_layout(red_band)
     
-    p_sub_view.yaxis[0].formatter = NumeralTickFormatter(format="0")
+    p_sub_view.yaxis[0].formatter = NumeralTickFormatter(format="0.0")
     
     # show the results
     p_historical.legend.location = "top_left"
