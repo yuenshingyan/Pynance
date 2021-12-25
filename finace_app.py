@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(historical_price):
+def regime_detection(historical_price, bollinger_bands=True):
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
@@ -131,6 +131,18 @@ def regime_detection(historical_price):
     p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
     p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
     p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
+    
+    # Bollinger Bands
+    if bollinger_bands:
+      bollinger_upper, bollinger_lower, ret = bollinger(historical_price)
+      source = ColumnDataSource({
+          'base':bollinger_lower.index,
+          'lower':bollinger_lower,
+          'upper':bollinger_upper
+          })
+
+      band = Band(base='base', lower='lower', upper='upper', source=source, fill_alpha=0.5)
+      p_historical.add_layout(band)
 
     # Log Return with High Volatility
     p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
@@ -199,6 +211,25 @@ def consecutive_list(iterable):
     return 0, 0, 0, 0
 
   return n_grp, group_duration_median, group_duration_mean, net_return
+
+def bollinger(historical_price, window=7, m=2):
+  historical_price.loc[:, 'Typical Price'] = (historical_price["High"] + historical_price["Low"] + historical_price["Adj Close"]) / 3
+  
+  bollinger_sma = historical_price.loc[:, 'Typical Price'].rolling(window=window).mean()
+  bollinger_std = historical_price.loc[:, 'Typical Price'].rolling(window=window).std()
+  
+  bollinger_upper = bollinger_sma + bollinger_std * m
+  bollinger_lower = bollinger_sma - bollinger_std * m
+
+  bollinger_sell = np.where(historical_price['Adj Close'] >= bollinger_upper, 1, np.nan) * historical_price['Adj Close']
+  bollinger_buy = np.where(historical_price['Adj Close'] <= bollinger_lower, 1, np.nan) * historical_price['Adj Close']
+
+  is_invested_bollinger = np.where(bollinger_sell >= 0, False, True)
+  log_ret = np.log1p(historical_price["Adj Close"].pct_change(-1))
+  log_ret_bollinger = is_invested_bollinger * log_ret
+  ret = np.exp(sum(log_ret_bollinger.dropna())) - 1
+
+  return bollinger_upper, bollinger_lower, ret
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
