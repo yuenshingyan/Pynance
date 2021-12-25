@@ -81,100 +81,100 @@ def regime_detection(historical_price, bollinger_bands="No", RSI="No"):
 
   model = hmm.GaussianHMM(n_components=2, covariance_type='diag')
   X = log_ret.dropna().to_numpy().reshape(-1, 1)
-  try:
-    model.fit(X) # Viterbi Algo is used to find the max proba, mean and variance
+#   try:
+  model.fit(X) # Viterbi Algo is used to find the max proba, mean and variance
 
-    Z = model.predict(X)
-    Z_Close = np.append(Z, False)
+  Z = model.predict(X)
+  Z_Close = np.append(Z, False)
 
-    Z2 = pd.DataFrame(Z, index=log_ret.dropna().index, columns=['state'])
-    Z2_Close = pd.DataFrame(Z_Close, index=log_ret.index, columns=['state'])
+  Z2 = pd.DataFrame(Z, index=log_ret.dropna().index, columns=['state'])
+  Z2_Close = pd.DataFrame(Z_Close, index=log_ret.index, columns=['state'])
 
-    # dying the returns
-    returns_high_volatility = np.empty(len(Z))
-    returns_low_volatility = np.empty(len(Z))
+  # dying the returns
+  returns_high_volatility = np.empty(len(Z))
+  returns_low_volatility = np.empty(len(Z))
 
-    returns_high_volatility[:] = np.nan
-    returns_low_volatility[:] = np.nan
+  returns_high_volatility[:] = np.nan
+  returns_low_volatility[:] = np.nan
 
-    if len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) > 0:
-      if max(log_ret.dropna()[Z == 1]) > max(log_ret.dropna()[Z == 0]):
-        returns_high_volatility[Z == 1] = log_ret.dropna()[Z == 1]
-        returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+  if len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) > 0:
+    if max(log_ret.dropna()[Z == 1]) > max(log_ret.dropna()[Z == 0]):
+      returns_high_volatility[Z == 1] = log_ret.dropna()[Z == 1]
+      returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
 
-      else:
-        returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
-        returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
+    else:
+      returns_high_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+      returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]
 
-    elif len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) == 0:
-        returns_high_volatility[Z == 1] = np.array([])
-        returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
+  elif len(log_ret.dropna()[Z == 0]) > 0 and len(log_ret.dropna()[Z == 1]) == 0:
+      returns_high_volatility[Z == 1] = np.array([])
+      returns_low_volatility[Z == 0] = log_ret.dropna()[Z == 0]
 
-    elif len(log_ret.dropna()[Z == 0]) == 0 and len(log_ret.dropna()[Z == 1]) > 0:
-        returns_high_volatility[Z == 0] = np.array([])
-        returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]    
+  elif len(log_ret.dropna()[Z == 0]) == 0 and len(log_ret.dropna()[Z == 1]) > 0:
+      returns_high_volatility[Z == 0] = np.array([])
+      returns_low_volatility[Z == 1] = log_ret.dropna()[Z == 1]    
 
-    returns_high_volatility = np.concatenate(([np.nan], returns_high_volatility))
-    returns_low_volatility = np.concatenate(([np.nan], returns_low_volatility))
+  returns_high_volatility = np.concatenate(([np.nan], returns_high_volatility))
+  returns_low_volatility = np.concatenate(([np.nan], returns_low_volatility))
 
-    inc = historical_price["Adj Close"] > historical_price["Open"]
-    dec = historical_price["Open"] > historical_price["Adj Close"]
-    w = 12 * 60 * 60 * 1000 # half day in ms
+  inc = historical_price["Adj Close"] > historical_price["Open"]
+  dec = historical_price["Open"] > historical_price["Adj Close"]
+  w = 12 * 60 * 60 * 1000 # half day in ms
 
-    TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
+  TOOLS = "pan, wheel_zoom, box_zoom, reset, save"
 
-    # Historical Price
-    p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1300, height=400)
-    p_historical.xaxis.major_label_orientation = pi/4
-    p_historical.grid.grid_line_alpha=0.3
+  # Historical Price
+  p_historical = figure(x_axis_type="datetime", tools=TOOLS, width=1300, height=400)
+  p_historical.xaxis.major_label_orientation = pi/4
+  p_historical.grid.grid_line_alpha=0.3
 
-    p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
-    p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
-    p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
+  p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
+  p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
+  p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
 
-    # Bollinger Bands
-    if bollinger_bands == "Yes":
-      bollinger_upper, bollinger_lower = bollinger(historical_price)
-      source = ColumnDataSource({
-          'base':bollinger_lower.index,
-          'lower':bollinger_lower,
-          'upper':bollinger_upper
-          })
+  # Bollinger Bands
+  if bollinger_bands == "Yes":
+    bollinger_upper, bollinger_lower = bollinger(historical_price)
+    source = ColumnDataSource({
+        'base':bollinger_lower.index,
+        'lower':bollinger_lower,
+        'upper':bollinger_upper
+        })
 
-      band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="#99CCFF", fill_alpha=0.4)
-      p_historical.add_layout(band)
+    band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="#99CCFF", fill_alpha=0.4)
+    p_historical.add_layout(band)
 
-    # Log Return with High Volatility
+  # Log Return with High Volatility
+  p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+  p_log_ret.xaxis.major_label_orientation = pi/4
+  p_log_ret.grid.grid_line_alpha=0.3
+
+  p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
+  p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
+
+  # Relative Strength Index
+  if RSI == "Yes":
     p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
     p_log_ret.xaxis.major_label_orientation = pi/4
     p_log_ret.grid.grid_line_alpha=0.3
 
-    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
-    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
-    
-    # Relative Strength Index
-    if RSI == "Yes":
-      p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-      p_log_ret.xaxis.major_label_orientation = pi/4
-      p_log_ret.grid.grid_line_alpha=0.3
-      
-      rsi = relative_strength_index(historical_price)
-      p_log_ret.line(RSI.index, RSI, legend_label="Temp.", line_width=2)
-      upper_threshold = Span(location=70, dimension='width', line_color='black', line_width=1, fill_alpha=0.4)
-      lower_threshold = Span(location=30, dimension='width', line_color='black', line_width=1, fill_alpha=0.4)
-      p_log_ret.renderers.extend([upper_threshold, lower_threshold])
+    rsi = relative_strength_index(historical_price)
+    p_log_ret.line(RSI.index, RSI, legend_label="Temp.", line_width=2)
+    upper_threshold = Span(location=70, dimension='width', line_color='black', line_width=1, fill_alpha=0.4)
+    lower_threshold = Span(location=30, dimension='width', line_color='black', line_width=1, fill_alpha=0.4)
+    p_log_ret.renderers.extend([upper_threshold, lower_threshold])
 
-    # show the results
-    p_historical.legend.location = "top_left"
-    p_historical.xaxis.visible = False
-    p_historical.yaxis.axis_label = 'Price (USD)'
+  # show the results
+  p_historical.legend.location = "top_left"
+  p_historical.xaxis.visible = False
+  p_historical.yaxis.axis_label = 'Price (USD)'
 
-    p_log_ret.yaxis.axis_label = 'Return (%)'
+  p_log_ret.yaxis.axis_label = 'Return (%)'
 
-    return column(p_historical, p_log_ret), returns_high_volatility, returns_low_volatility
+  return column(p_historical, p_log_ret), returns_high_volatility, returns_low_volatility
   
-  except:
-    return None, None, None
+#   except:
+#     return None, None, None
 
 def var(ret, initial_investment, conf_level=.05):
   cov_matrix = ret.cov()
