@@ -159,7 +159,7 @@ def regime_detection(historical_price, bollinger_bands="No", RSI="No"):
     p_log_ret.grid.grid_line_alpha=0.3
 
     rsi = relative_strength_index(historical_price)
-    p_log_ret.line(RSI.index, RSI, legend_label="Temp.", line_width=2)
+    p_log_ret.line(RSI.index, RSI, legend_label="RSI.", line_width=2)
     upper_threshold = Span(location=70, dimension='width', line_color='black', line_width=1, fill_alpha=0.4)
     lower_threshold = Span(location=30, dimension='width', line_color='black', line_width=1, fill_alpha=0.4)
     p_log_ret.renderers.extend([upper_threshold, lower_threshold])
