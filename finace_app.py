@@ -134,7 +134,7 @@ def regime_detection(historical_price, bollinger_bands="No"):
 
     # Bollinger Bands
     if bollinger_bands == "Yes":
-      bollinger_upper, bollinger_lower, ret = bollinger(historical_price)
+      bollinger_upper, bollinger_lower = bollinger(historical_price)
       source = ColumnDataSource({
           'base':bollinger_lower.index,
           'lower':bollinger_lower,
