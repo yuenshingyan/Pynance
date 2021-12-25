@@ -133,14 +133,14 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
     p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
     
     # Volatility
-    if sub_view == "Volitility"
-    p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-    p_log_ret.xaxis.major_label_orientation = pi/4
-    p_log_ret.grid.grid_line_alpha=0.3
+    if sub_view == "Volitility":
+    p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+    p_sub_view.xaxis.major_label_orientation = pi/4
+    p_sub_view.grid.grid_line_alpha=0.3
 
-    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
-    p_log_ret.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
-    p_log_ret.yaxis.axis_label = 'Return (%)'
+    p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_high_volatility) - 1) * 100, width=w, color="#FFDB46", line_color="black")
+    p_sub_view.vbar(x=historical_price.index, top=(np.exp(returns_low_volatility) - 1) * 100, width=w, line_color="black")
+    p_sub_view.yaxis.axis_label = 'Return (%)'
     
     # Bollinger Bands
     if bollinger_bands == "Yes":
@@ -156,16 +156,16 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
 
     # Relative Strength Index
     if sub_view == "RSI":
-      p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-      p_log_ret.xaxis.major_label_orientation = pi/4
-      p_log_ret.grid.grid_line_alpha=0.3
+      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+      p_sub_view.xaxis.major_label_orientation = pi/4
+      p_sub_view.grid.grid_line_alpha=0.3
 
       rsi = relative_strength_index(historical_price)
-      p_log_ret.line(rsi.index, rsi, line_width=1)
+      p_sub_view.line(rsi.index, rsi, line_width=1)
       upper_threshold = Span(location=70, dimension='width', line_color='black', line_width=1, line_alpha=0.4)
       lower_threshold = Span(location=30, dimension='width', line_color='black', line_width=1, line_alpha=0.4)
-      p_log_ret.renderers.extend([upper_threshold, lower_threshold])
-      p_log_ret.yaxis.axis_label = 'RSI (%)'
+      p_sub_view.renderers.extend([upper_threshold, lower_threshold])
+      p_sub_view.yaxis.axis_label = 'RSI (%)'
 
     # OBV
     elif sub_view == "OBV":
@@ -175,12 +175,12 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
       red_upper_filtered = con_list(red_upper)
       red_lower_filtered = con_list(red_lower)
 
-      p_log_ret = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
-      p_log_ret.xaxis.major_label_orientation = pi/4
-      p_log_ret.grid.grid_line_alpha=0.3
+      p_sub_view = figure(x_axis_type="datetime", x_range=p_historical.x_range, width=1300, height=200)
+      p_sub_view.xaxis.major_label_orientation = pi/4
+      p_sub_view.grid.grid_line_alpha=0.3
 
-      p_log_ret.line(obv.index, obv, legend_label="OBV", line_width=1, line_color="green")
-      p_log_ret.line(obv_ema.index, obv_ema, legend_label="OBV_EMA", line_width=1, line_color="red")
+      p_sub_view.line(obv.index, obv, legend_label="OBV", line_width=1, line_color="green")
+      p_sub_view.line(obv_ema.index, obv_ema, legend_label="OBV_EMA", line_width=1, line_color="red")
 
       for lower, upper in zip(green_lower_filtered, green_upper_filtered):
         green_source = ColumnDataSource({
@@ -190,7 +190,7 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
               })
 
         green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
-        p_log_ret.add_layout(green_band)
+        p_sub_view.add_layout(green_band)
 
       for lower, upper in zip(red_lower_filtered, red_upper_filtered):
         red_source = ColumnDataSource({
@@ -200,14 +200,14 @@ def regime_detection(historical_price, bollinger_bands="No", sub_view="Volitilit
               })
 
         red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
-        p_log_ret.add_layout(red_band)
+        p_sub_view.add_layout(red_band)
 
     # show the results
     p_historical.legend.location = "top_left"
     p_historical.xaxis.visible = False
     p_historical.yaxis.axis_label = 'Price (USD)'
 
-    return column(p_historical, p_log_ret), returns_high_volatility, returns_low_volatility
+    return column(p_historical, p_sub_view), returns_high_volatility, returns_low_volatility
   
   except:
     return None, None, None
