@@ -471,7 +471,7 @@ st.title('Pynance')
 st.header("Regime Detection")
 cols_regime_detection = st.columns(3)
 cols_regime_detection2 = st.columns(8)
-cols_regime_detection3 = st.columns([.75, .5, 2, .5, 3])
+cols_regime_detection3 = st.columns([.75, .5, .75, .5, 3])
 one_year_ago = today - datetime.timedelta(365)
 
 ticker = cols_regime_detection[0].text_input(label="Please type in a stock symbol.", value="AAPL")
