@@ -141,6 +141,9 @@ def regime_detection(historical_price, SMA, bollinger_bands="No", ikh="No", sub_
     green_lower_filtered = con_list(green_lower)
     red_upper_filtered = con_list(red_upper)
     red_lower_filtered = con_list(red_lower)
+    
+    p_historical.line(slow_sma.index, slow_sma, line_width=1, line_color="green")
+    p_historical.line(slow_sma.index, fast_sma, line_width=1, line_color="red")
 
     for lower, upper in zip(green_lower_filtered, green_upper_filtered):
       green_source = ColumnDataSource({
@@ -185,6 +188,9 @@ def regime_detection(historical_price, SMA, bollinger_bands="No", ikh="No", sub_
     green_lower_filtered = con_list(green_lower)
     red_upper_filtered = con_list(red_upper)
     red_lower_filtered = con_list(red_lower)
+    
+    p_historical.line(senkou_a.index, senkou_b, line_width=1, line_color="green")
+    p_historical.line(senkou_a.index, senkou_b, line_width=1, line_color="red")
 
     for lower, upper in zip(green_lower_filtered, green_upper_filtered):
       green_source = ColumnDataSource({
