@@ -170,7 +170,7 @@ def regime_detection(historical_price, SMA, bollinger_bands="No", ikh="No", sub_
 
   # Bollinger Bands
   if bollinger_bands == "Yes":
-    bollinger_upper, bollinger_lower = bollinger(historical_price)
+    bollinger_upper, bollinger_lower, bollinger_sma = bollinger(historical_price)
     source = ColumnDataSource({
         'base':bollinger_lower.index,
         'lower':bollinger_lower,
@@ -178,6 +178,7 @@ def regime_detection(historical_price, SMA, bollinger_bands="No", ikh="No", sub_
         })
 
     band = Band(base='base', lower='lower', upper='upper', source=source, fill_color="#99CCFF", fill_alpha=0.4)
+    p_historical.line(bollinger_sma.index, bollinger_sma, line_width=1, line_color="#99CCFF")
     p_historical.add_layout(band)
 
   if ikh == "Yes":
@@ -353,7 +354,7 @@ def simple_moving_average(historical_price, window_slow=200, window_fast=50):
   return slow_sma, fast_sma
 
 
-def bollinger(historical_price, window=7, m=2):
+def bollinger(historical_price, window=14, m=2):
   historical_price.loc[:, 'Typical Price'] = (historical_price["High"] + historical_price["Low"] + historical_price["Adj Close"]) / 3
   
   bollinger_sma = historical_price.loc[:, 'Typical Price'].rolling(window=window).mean()
@@ -362,7 +363,7 @@ def bollinger(historical_price, window=7, m=2):
   bollinger_upper = bollinger_sma + bollinger_std * m
   bollinger_lower = bollinger_sma - bollinger_std * m
 
-  return bollinger_upper, bollinger_lower
+  return bollinger_upper, bollinger_lower, bollinger_sma
 
 def relative_strength_index(historical_price):
   historical_return = historical_price["Adj Close"].pct_change(-1).dropna()
