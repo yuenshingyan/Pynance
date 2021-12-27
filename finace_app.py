@@ -487,7 +487,7 @@ def convergence_divergence(line1, line2):
 st.set_page_config(
     page_title="Pynance",
     page_icon="📈",
-    layout="wide",
+    layout="centered", # wide
     initial_sidebar_state="collapsed",
 )
 
