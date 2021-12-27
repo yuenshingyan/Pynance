@@ -549,7 +549,7 @@ for b, bv in zip(buttons, buttons_val):
     
 # Regime Detection Inputs
 if ticker.isupper() and len(ticker) <= 5:
-  if len(historical_price) > 1:
+  try:
     p, returns_high_volatility, returns_low_volatility = regime_detection(ticker, start_date, end_date, SMA, BB, IKH, sub_view)
       
     if p != None:
@@ -572,7 +572,7 @@ if ticker.isupper() and len(ticker) <= 5:
     else:
       st.write("Less than two regime detected, please try a longer date range.")
     
-  else:
+  except:
     st.write("Selected date range must be greater than one day, try a longer period.")
 
 # ----------------------------------------------------------------Portfolio Optimization---------------------------------------------------------------------------
