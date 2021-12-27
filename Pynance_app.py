@@ -553,7 +553,7 @@ if ticker.isupper() and len(ticker) <= 5:
     p, returns_high_volatility, returns_low_volatility = regime_detection(ticker, start_date, end_date, SMA, BB, IKH, sub_view)
       
     if p != None:
-      b = st.column(1)
+      b = st.columns(1)
       b.bokeh_chart(p, use_container_width=True)
 
       # Regime Stats 
