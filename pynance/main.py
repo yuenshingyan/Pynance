@@ -139,9 +139,6 @@ cleaned_weights_performance_stats.loc[:, 'Min Volatility'] = cleaned_weights_per
 cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_performance_stats.loc[:,
                                                          'Max Sharpe (%)'] * capital / (100 * 7.8)
 
-cleaned_weights_performance_stats.iloc[:-2, :2] = cleaned_weights_performance_stats.iloc[:-2, :2] / 100
-cleaned_weights_performance_stats.iloc[:-2, 2:4] = cleaned_weights_performance_stats.iloc[:-2, 2:4] / capital * (100 * 7.8)
-
 cols_port_opt_var = st.columns([6, 4])
 cols_port_opt_var[0].subheader("Optimized Portfolio")
 cols_port_opt_var[0].dataframe(cleaned_weights_performance_stats.style.format("{:,.2f}"))
