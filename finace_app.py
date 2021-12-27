@@ -137,7 +137,7 @@ def regime_detection(ticker, start_date, end_date, SMA, bollinger_bands="No", ik
     if SMA == "Yes":
       historical_price_sma = yf.download(ticker, start=start_date - datetime.timedelta(200), end=end_date)
       slow_sma, fast_sma = simple_moving_average(historical_price)
-      green_upper, green_lower, red_upper, red_lower = convergence_divergence(fast_sma, slow_sma)
+      green_upper, green_lower, red_upper, red_lower = convergence_divergence(slow_sma, fast_sma)
 
       green_upper_filtered = con_list(green_upper)
       green_lower_filtered = con_list(green_lower)
