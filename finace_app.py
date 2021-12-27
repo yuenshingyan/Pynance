@@ -144,8 +144,8 @@ def regime_detection(ticker, start_date, end_date, SMA, bollinger_bands="No", ik
       red_upper_filtered = con_list(red_upper)
       red_lower_filtered = con_list(red_lower)
 
-      p_historical.line(slow_sma.index, slow_sma, line_width=1, line_color="green")
-      p_historical.line(slow_sma.index, fast_sma, line_width=1, line_color="red")
+      p_historical.line(slow_sma.index, slow_sma, line_width=1, line_color="red")
+      p_historical.line(fast_sma.index, fast_sma, line_width=1, line_color="green")
 
       for lower, upper in zip(green_lower_filtered, green_upper_filtered):
         green_source = ColumnDataSource({
