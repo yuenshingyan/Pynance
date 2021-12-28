@@ -582,7 +582,6 @@ cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_perform
 
 cleaned_weights_performance_stats.iloc[-2:, :2] = cleaned_weights_performance_stats.iloc[-2:, :2] / 100
 cleaned_weights_performance_stats.iloc[-2:, 2:4] = np.nan
-cleaned_weights_performance_stats.fillna("", inplace=True)
 
 cols_port_opt_var = st.columns([6, 4])
 cols_port_opt_var[0].subheader("Optimized Portfolio")
