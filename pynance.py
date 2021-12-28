@@ -499,7 +499,7 @@ st.title('Pynance')
 # Regime Detection
 st.header("Regime Detection")
 cols_regime_detection = st.columns([0.005, 0.005, 0.005])
-cols_regime_detection2 = st.columns([1, 1, 1, 1, 1, 1, 1, 1])
+cols_regime_detection2 = st.columns(2)
 cols_regime_detection3 = st.columns([1.02, .5, 1.01, .5, .75, .5, 2])
 one_year_ago = today - datetime.timedelta(365)
 
