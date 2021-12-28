@@ -573,14 +573,14 @@ cleaned_weights_performance_stats = pd.DataFrame(cleaned_weights_performance_sta
                                                  index=tickers.split(",") + ["Expected annual return",
                                                                              "Annual volatility", "Sharpe Ratio"])
 
-cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'].iloc[-2:] = cleaned_weights_performance_stats.loc[:,
-                                                                 'Min Volatility (%)'].iloc[-2:] * 100
-cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'].iloc[-2:] = cleaned_weights_performance_stats.loc[:,
-                                                             'Max Sharpe (%)'].iloc[-2:] * 100
-cleaned_weights_performance_stats.loc[:, 'Min Volatility'].iloc[-2:] = cleaned_weights_performance_stats.loc[:,
-                                                             'Min Volatility (%)'].iloc[-2:] * capital / (100 * 7.8)
-cleaned_weights_performance_stats.loc[:, 'Max Sharpe'].iloc[-2:] = cleaned_weights_performance_stats.loc[:,
-                                                         'Max Sharpe (%)'].iloc[-2:] * capital / (100 * 7.8)
+cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'].iloc[:-2] = cleaned_weights_performance_stats.loc[:,
+                                                                 'Min Volatility (%)'].iloc[:-2] * 100
+cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'].iloc[:-2] = cleaned_weights_performance_stats.loc[:,
+                                                             'Max Sharpe (%)'].iloc[:-2] * 100
+cleaned_weights_performance_stats.loc[:, 'Min Volatility'].iloc[:-2] = cleaned_weights_performance_stats.loc[:,
+                                                             'Min Volatility (%)'].iloc[:-2] * capital / (100 * 7.8)
+cleaned_weights_performance_stats.loc[:, 'Max Sharpe'].iloc[:-2] = cleaned_weights_performance_stats.loc[:,
+                                                         'Max Sharpe (%)'].iloc[:-2] * capital / (100 * 7.8)
 
 '''cleaned_weights_performance_stats.iloc[-2:, :2] = cleaned_weights_performance_stats.iloc[-2:, :2] / 100
 cleaned_weights_performance_stats.iloc[-2:, 2:4] = cleaned_weights_performance_stats.iloc[-2:, :2] / capital * (100 * 7.8)'''
