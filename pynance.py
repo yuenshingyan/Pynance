@@ -515,8 +515,8 @@ three_years = cols_regime_detection2[4].button("3 Years")
 five_years = cols_regime_detection2[5].button("5 Years")
 ten_years = cols_regime_detection2[6].button("10 Years")
 
-BB = cols_regime_detection3[2].select_slider('Bollingers Band', options=['No', 'Yes'], value="No")
-sub_view = cols_regime_detection3[6].selectbox('Sub View', options=['Volitility',
+BB = cols_regime_detection3[0].select_slider('Bollingers Band', options=['No', 'Yes'], value="No")
+sub_view = cols_regime_detection3[1].selectbox('Sub View', options=['Volitility',
                                                                     'Relative Strength Index',
                                                                     'On-Balance Volume',
                                                                     'Stochastic Oscillator',
