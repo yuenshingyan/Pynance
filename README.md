@@ -1,2 +1,2 @@
 # Python Finance APP
-https://share.streamlit.io/hindyds/finance/main/finace_app.py#portfolio-optimization
+https://share.streamlit.io/hindyds/pynance/main/pynance.py
