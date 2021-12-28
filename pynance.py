@@ -14,7 +14,6 @@ from pypfopt import EfficientFrontier
 from pypfopt import risk_models
 from pypfopt import expected_returns
 import yfinance as yf
-from Technical_Analysis import simple_moving_average, bollinger, relative_strength_index, on_balance_volume, money_flow_index, ichimoku_kinko_hyo, stochastic_oscillator
 
 # Import Dependencies
 import numpy as np
@@ -27,7 +26,6 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-from helper_functions import get_adj_close_prices, port_opt, regime_detection, var
 
 
 # Helper Functions
