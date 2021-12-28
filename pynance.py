@@ -572,7 +572,7 @@ cleaned_weights_performance_stats = pd.DataFrame(cleaned_weights_performance_sta
                                                  columns=['Min Volatility (%)', 'Max Sharpe (%)'],
                                                  index=tickers.split(",") + ["Expected annual return",
                                                                              "Annual volatility", "Sharpe Ratio"])
-print(cleaned_weights.index)
+print(cleaned_weights)
 cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] = cleaned_weights_performance_stats.loc[:,
                                                                  'Min Volatility (%)'] * 100
 cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] = cleaned_weights_performance_stats.loc[:,
