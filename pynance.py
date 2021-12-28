@@ -460,7 +460,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-
+st.markdown(
+        f"""
+<style>
+    .reportview-container .main .block-container{{
+        max-width: {1450}px;
+    }}
+</style>
+""",
+        unsafe_allow_html=True,
+    )
 
 for key in ["", "Watchlist", "Portfolios"]:
     if key not in st.session_state:
