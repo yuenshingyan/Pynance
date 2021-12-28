@@ -505,13 +505,18 @@ for n, j in zip(nov, jan):
     series += df["Close"].to_list()
     xrange += list(df.index)
     
+cols_seasonality = st.columns(2)
+    
 result_add = seasonal_decompose(series, model='additive', period=42)
 result_mul = seasonal_decompose(series, model='multiplicative', period=42)
 
-peaks_add, _ = find_peaks(result_add.seasonal, height=39)
-peaks_mul, _ = find_peaks(result_mul.seasonal, height=1.07)
 
-model = st.selectbox('Model', options=['Addictive', 'Multiplicative'], index=0)
+model = cols_seasonality[0].selectbox('Model', options=['Addictive', 'Multiplicative'], index=0) 
+height_choices = cols_seasonality[1].number_input('Height', 5) 
+
+peaks_add, _ = find_peaks(result_add.seasonal, height=height_choices)
+peaks_mul, _ = find_peaks(result_mul.seasonal, height=height_choices)
+
 if model == 'Addictive':
     result = result_add
     peaks = peaks_add
