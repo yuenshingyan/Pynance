@@ -499,7 +499,7 @@ st.title('Pynance')
 # Regime Detection
 st.header("Regime Detection")
 cols_regime_detection = st.columns([0.005, 0.005, 0.005])
-cols_regime_detection2 = st.columns(7)
+cols_regime_detection2 = st.columns([1, 1, 1, 1, 1, 1, 1, 1])
 cols_regime_detection3 = st.columns([1.02, .5, 1.01, .5, .75, .5, 2])
 one_year_ago = today - datetime.timedelta(365)
 
@@ -508,9 +508,9 @@ start_date = cols_regime_detection[1].date_input("From", one_year_ago)
 end_date = cols_regime_detection[2].date_input("To", today, max_value=today)
 
 one_month = cols_regime_detection2[0].button("1 Month")
-'''three_months = cols_regime_detection2[1].button("3 Months")
+three_months = cols_regime_detection2[1].button("3 Months")
 six_months = cols_regime_detection2[2].button("6 Months")
-one_year = cols_regime_detection2[3].button("1 Year")'''
+one_year = cols_regime_detection2[3].button("1 Year")
 three_years = cols_regime_detection2[4].button("3 Years")
 five_years = cols_regime_detection2[5].button("5 Years")
 ten_years = cols_regime_detection2[6].button("10 Years")
