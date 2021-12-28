@@ -596,18 +596,6 @@ cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_perform
 st.subheader("Optimized Portfolio")
 st.dataframe(cleaned_weights_performance_stats.style.format("{:,.2f}"))
 
-# Save Load port
-cols_load_save = st.columns(2)
-cols_load_save[0].subheader("Save Portfolio") 
-cols_load_save[1].subheader("Load a Portfolio") 
-port_name = cols_load_save[0].text_input("Name your portfolio", key="save_portfolio")
-option = cols_load_save[1].selectbox('Load a portfolio', st.session_state["Portfolios"].keys())
-
-if port_name != "":
-  if port_name not in st.session_state["Portfolios"]:
-    st.session_state["Portfolios"][port_name] = tickers
-    st.write("Porfolio Saved Successfully!")
-
 # -------------------------------------------------------------Value At Risk---------------------------------------------------------------------------------------
 cols_value_at_risk = st.columns(2)
 investing_period = end_date_port_opt - start_date_port_opt
