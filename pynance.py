@@ -508,12 +508,12 @@ start_date = cols_regime_detection[1].date_input("From", one_year_ago)
 end_date = cols_regime_detection[2].date_input("To", today, max_value=today)
 
 one_month = cols_regime_detection2[0].button("1 Month")
-three_months = cols_regime_detection2[1].button("3 Months")
+'''three_months = cols_regime_detection2[1].button("3 Months")
 six_months = cols_regime_detection2[2].button("6 Months")
 one_year = cols_regime_detection2[3].button("1 Year")
 three_years = cols_regime_detection2[4].button("3 Years")
 five_years = cols_regime_detection2[5].button("5 Years")
-ten_years = cols_regime_detection2[6].button("10 Years")
+ten_years = cols_regime_detection2[6].button("10 Years")'''
 
 BB = cols_regime_detection3[2].select_slider('Bollingers Band', options=['No', 'Yes'], value="No")
 sub_view = cols_regime_detection3[6].selectbox('Sub View', options=['Volitility',
