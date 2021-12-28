@@ -581,7 +581,7 @@ cleaned_weights_performance_stats.loc[:, 'Max Sharpe'] = cleaned_weights_perform
                                                          'Max Sharpe (%)'] * capital / (100 * 7.8)
 
 cleaned_weights_performance_stats.iloc[-2:, :2] = cleaned_weights_performance_stats.iloc[-2:, :2] / 100
-cleaned_weights_performance_stats.iloc[-2:, 2:4] = ""
+cleaned_weights_performance_stats.iloc[-2:, 2:4] = " "
 
 cols_port_opt_var = st.columns([6, 4])
 cols_port_opt_var[0].subheader("Optimized Portfolio")
