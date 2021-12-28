@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(ticker, start_date, end_date, SMA, bollinger_bands="No", ikh="No", sub_view="Volitility"):
+def regime_detection(ticker, start_date, end_date, bollinger_bands="No", ikh="No", sub_view="Volitility"):
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
@@ -132,43 +132,6 @@ def regime_detection(ticker, start_date, end_date, SMA, bollinger_bands="No", ik
     p_historical.segment(historical_price.index, historical_price["High"], historical_price.index, historical_price["Low"], color="black")
     p_historical.vbar(historical_price.index[inc], w, historical_price["Open"][inc], historical_price["Adj Close"][inc], width=w, fill_color="#99FFCC", line_color="black", legend_label="Adjusted Close Price (Inc)")
     p_historical.vbar(historical_price.index[dec], w, historical_price["Open"][dec], historical_price["Adj Close"][dec], width=w, fill_color="#F2583E", line_color="black", legend_label="Adjusted Close Price (Dec)")
-
-    # Simple Moving Average
-    if SMA == "Yes":
-      historical_price_sma = yf.download(ticker, start=start_date - datetime.timedelta(200), end=end_date)
-      slow_sma, fast_sma = simple_moving_average(historical_price)
-      green_upper, green_lower, red_upper, red_lower = convergence_divergence(fast_sma, slow_sma)
-
-      green_upper_filtered = con_list(green_upper)
-      green_lower_filtered = con_list(green_lower)
-      red_upper_filtered = con_list(red_upper)
-      red_lower_filtered = con_list(red_lower)
-
-      p_historical.line(slow_sma.index, slow_sma, line_width=1, line_color="red")
-      p_historical.line(fast_sma.index, fast_sma, line_width=1, line_color="green")
-
-      for lower, upper in zip(green_lower_filtered, green_upper_filtered):
-        green_source = ColumnDataSource({
-              'base':lower.index,
-              'lower':lower,
-              'upper':upper
-              })
-
-        green_band = Band(base='base', lower='lower', upper='upper', source=green_source, fill_alpha=0.5, fill_color="green")
-        p_historical.add_layout(green_band)
-
-      for lower, upper in zip(red_lower_filtered, red_upper_filtered):
-        red_source = ColumnDataSource({
-              'base':lower.index,
-              'lower':lower,
-              'upper':upper
-              })
-
-        red_band = Band(base='base', lower='lower', upper='upper', source=red_source, fill_alpha=0.5, fill_color="red")
-        p_historical.add_layout(red_band)
-
-      p_historical.yaxis[0].formatter = NumeralTickFormatter(format="0 a")
-      p_historical.yaxis.axis_label = 'Moving Avg.'
 
     # Bollinger Bands
     if bollinger_bands == "Yes":
@@ -349,13 +312,6 @@ def consecutive_list(iterable):
   return n_grp, group_duration_median, group_duration_mean, net_return
 
 # -------------------------------------------------------------------Technical Analysis-----------------------------------------------------------------------------
-def simple_moving_average(historical_price, window_slow=200, window_fast=50):
-  slow_sma = historical_price['Close'].rolling(window_slow).mean()
-  fast_sma = historical_price['Close'].rolling(window_fast).mean()   
-
-  return slow_sma, fast_sma
-
-
 def bollinger(historical_price, window=14, m=2):
   historical_price.loc[:, 'Typical Price'] = (historical_price["High"] + historical_price["Low"] + historical_price["Adj Close"]) / 3
   
@@ -535,7 +491,6 @@ three_years = cols_regime_detection2[5].button("3 Years")
 five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
-SMA = cols_regime_detection3[0].select_slider('Simple Moving Average', options=['No', 'Yes'], value="No")
 BB = cols_regime_detection3[2].select_slider('Bollingers Band', options=['No', 'Yes'], value="No")
 IKH = cols_regime_detection3[4].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
 sub_view = cols_regime_detection3[6].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO', 'MFI'], value="Volitility")
