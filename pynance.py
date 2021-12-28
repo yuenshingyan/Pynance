@@ -25,6 +25,9 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 
+from statsmodels.tsa.seasonal import seasonal_decompose
+from scipy.signal import find_peaks
+
 
 # Helper Functions
 def get_datetime(past_days=365):
@@ -448,6 +451,22 @@ def stochastic_oscillator(historical_price, window_low=14, window_high=14):
     return K
 
 
+def xmases_date_range():
+    nov = []
+    for i in range(21):
+        if len(str(i)) == 1:
+            nov.append("20" + "0" + str(i) + "-11-01")
+        else:
+            nov.append("20" + str(i) + "-11-01")
+
+    jan = []
+    for i in range(1, 22):
+        if len(str(i)) == 1:
+            jan.append("20" + "0" + str(i) + "-01-01")
+        else:
+            jan.append("20" + str(i) + "-01-01")
+            
+    return nov, jan
 
 
 
@@ -541,6 +560,27 @@ if ticker.isupper() and len(ticker) <= 5:
 
     except:
         st.write("Selected date range must be greater than one day, try a longer period.")
+        
+# ---------------------------------------------------------------------Seasonality--------------------------------------------------------------------------------        
+nov, jan = xmases_date_range()
+series = []
+xrange = []
+for n, j in zip(nov, jan):
+    df = yf.download(ticker, n, j)
+    series += df["Close"].to_list()
+    xrange += list(df.index)
+    
+result_add = seasonal_decompose(series, model='additive', period=42)
+result_mul = seasonal_decompose(series, model='multiplicative', period=42)
+
+peaks_add, _ = find_peaks(result_add.seasonal, height=39)
+peaks_mul, _ = find_peaks(result_mul.seasonal, height=1.07)
+
+TOOLS = "pan,wheel_zoom,box_zoom,reset,save"
+p_seasonality = figure(x_axis_type="datetime", tools=TOOLS, width=1000, height=300, title = "GOOG Candlestick")
+p_seasonality.line(xrange, result_add.seasonal, line_width=1)
+p_seasonality.scatter(np.array(xrange)[peaks_add], result_add.seasonal[peaks_add], fill_color="orange", line_color='orange')
+st.bokeh_chart(p_seasonality, use_container_width=False)
 
 # ----------------------------------------------------------------Portfolio Optimization---------------------------------------------------------------------------
 st.header("Portfolio Optimization")
