@@ -512,7 +512,7 @@ result_mul = seasonal_decompose(series, model='multiplicative', period=42)
 
 
 model = cols_seasonality[0].selectbox('Model', options=['Addictive', 'Multiplicative'], index=0) 
-height_choices = cols_seasonality[1].number_input('Height', 5) 
+height_choices = cols_seasonality[1].number_input('Height', value=5) 
 
 peaks_add, _ = find_peaks(result_add.seasonal, height=height_choices)
 peaks_mul, _ = find_peaks(result_mul.seasonal, height=height_choices)
