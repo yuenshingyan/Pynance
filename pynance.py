@@ -520,7 +520,7 @@ else:
     peaks = peaks_mul
     
 TOOLS = "pan,wheel_zoom,box_zoom,reset,save"
-p_seasonality = figure(x_axis_type="datetime", tools=TOOLS, width=1450, height=300, title = ticker +  "Seasonality")
+p_seasonality = figure(x_axis_type="datetime", tools=TOOLS, width=1300, height=300, title = ticker +  "Seasonality")
 p_seasonality.line(xrange, result.seasonal, line_width=1)
 p_seasonality.scatter(np.array(xrange)[peaks], result.seasonal[peaks], fill_color="orange", line_color='orange')
 st.bokeh_chart(p_seasonality, use_container_width=False)
