@@ -8,3 +8,4 @@ pyportfolioopt==1.5.1
 matplotlib==3.5.1
 scipy==1.7.3
 pygithub==1.55
+statsmodels==0.13.1
