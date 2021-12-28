@@ -271,40 +271,6 @@ def var(ret, cleaned_weights_min_volatility, initial_investment, conf_level=.05)
     return var_1d1[0][0]
 
 
-def consecutive_list(iterable):
-    res = []
-    for p in iterable:
-        if p > 0:
-            res.append(True)
-        elif p < 0:
-            res.append(False)
-
-    volatility_clusters = {}
-    count = 0
-    st = 0
-    for i, j in enumerate(res):
-        if i + 1 < len(res):
-            if res[i] is not res[i + 1]:
-                volatility_clusters[count] = res[st:i + 1]
-                count += 1
-                st = i + 1
-
-        else:
-            volatility_clusters[count] = res[st + 1:]
-
-    if len(volatility_clusters.keys()) > 0:
-        n_grp = list(volatility_clusters.keys())[-1]
-        list_cluster_len = [len(v) for v in volatility_clusters.values()]
-        group_duration_median = np.median(list_cluster_len)
-        group_duration_mean = sum(list_cluster_len) / len(volatility_clusters.values())
-        net_return = np.expm1(np.nansum(iterable))
-
-    else:
-        return 0, 0, 0, 0
-
-    return n_grp, group_duration_median, group_duration_mean, net_return
-
-
 def con_list(list1):
     res = []
     count = 0
@@ -353,14 +319,6 @@ def convergence_divergence(line1, line2):
     red_lower.index = line1.index
 
     return green_upper, green_lower, red_upper, red_lower
-
-
-
-def simple_moving_average(historical_price, window_slow=200, window_fast=50):
-    slow_sma = historical_price['Close'].rolling(window_slow).mean()
-    fast_sma = historical_price['Close'].rolling(window_fast).mean()
-
-    return slow_sma, fast_sma
 
 
 def bollinger(historical_price, window=14, m=2):
@@ -417,29 +375,6 @@ def money_flow_index(historical_price, window=14):
     MFI.index = historical_price.index
 
     return MFI
-
-def ichimoku_kinko_hyo(historical_price, tenkan_window=9, kijun_window=26, senkou_b_window=52):
-    # Tenkan-Sen
-    tenkan_sen = (historical_price['High'].rolling(tenkan_window).max() + historical_price['Low'].rolling(
-        tenkan_window).min()) / 2
-
-    # Kijun-Sen
-    kijun_sen = (historical_price['High'].rolling(kijun_window).max() + historical_price['Low'].rolling(
-        kijun_window).min()) / 2
-
-    # Chikou Span
-    chikou_span = historical_price['Close'].shift(-26)
-
-    # Senkou A
-    senkou_a = ((tenkan_sen + kijun_sen) / 2).shift(26)
-
-    # Senkou B
-    senkou_b = ((historical_price['High'].rolling(senkou_b_window).max() + historical_price['Low'].rolling(
-        senkou_b_window).min()) / 2).shift(52)
-
-    shade = np.where(senkou_a >= senkou_b, 1, 0)
-
-    return senkou_a, senkou_b
 
 
 def stochastic_oscillator(historical_price, window_low=14, window_high=14):
@@ -576,10 +511,18 @@ result_mul = seasonal_decompose(series, model='multiplicative', period=42)
 peaks_add, _ = find_peaks(result_add.seasonal, height=39)
 peaks_mul, _ = find_peaks(result_mul.seasonal, height=1.07)
 
+model = st.selectbox('Model', options=['Addictive', 'Multiplicative'], index=0)
+if model == 'Addictive':
+    result = result_add
+    peaks = peaks_add
+else:
+    result = result_mul
+    peaks = peaks_mul
+    
 TOOLS = "pan,wheel_zoom,box_zoom,reset,save"
-p_seasonality = figure(x_axis_type="datetime", tools=TOOLS, width=1000, height=300, title = "GOOG Candlestick")
-p_seasonality.line(xrange, result_add.seasonal, line_width=1)
-p_seasonality.scatter(np.array(xrange)[peaks_add], result_add.seasonal[peaks_add], fill_color="orange", line_color='orange')
+p_seasonality = figure(x_axis_type="datetime", tools=TOOLS, width=1450, height=300, title = ticker +  "Seasonality")
+p_seasonality.line(xrange, result.seasonal, line_width=1)
+p_seasonality.scatter(np.array(xrange)[peaks], result.seasonal[peaks], fill_color="orange", line_color='orange')
 st.bokeh_chart(p_seasonality, use_container_width=False)
 
 # ----------------------------------------------------------------Portfolio Optimization---------------------------------------------------------------------------
