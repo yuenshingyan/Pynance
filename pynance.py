@@ -76,7 +76,7 @@ def port_opt(acp):
 
   return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
-def regime_detection(ticker, start_date, end_date, bollinger_bands="No", ikh="No", sub_view="Volitility"):
+def regime_detection(ticker, start_date, end_date, bollinger_bands="No", sub_view="Volitility"):
   historical_price = yf.download(ticker, start=start_date, end=end_date)
   log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
@@ -492,8 +492,12 @@ five_years = cols_regime_detection2[6].button("5 Years")
 ten_years = cols_regime_detection2[7].button("10 Years")
 
 BB = cols_regime_detection3[2].select_slider('Bollingers Band', options=['No', 'Yes'], value="No")
-IKH = cols_regime_detection3[4].select_slider('Ichimoku Kinko Hyo', options=['No', 'Yes'], value="No")
-sub_view = cols_regime_detection3[6].select_slider('Sub View', options=['Volitility', 'RSI', 'OBV', 'SO', 'MFI'], value="Volitility")
+sub_view = cols_regime_detection3[6].selectbox('Sub View', options=['Volitility', 
+                                                                    'Relative Strength', 
+                                                                    'On-Balance Volume', 
+                                                                    'Stochastic Oscillator', 
+                                                                    'Money Flow Index'], 
+                                               index=0)
 
 buttons = [one_week, one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [7, 30, 90, 180, 365, 1095, 1825, 3650]
@@ -505,7 +509,7 @@ for b, bv in zip(buttons, buttons_val):
 # Regime Detection Inputs
 if ticker.isupper() and len(ticker) <= 5:
   try:
-    p, returns_high_volatility, returns_low_volatility = regime_detection(ticker, start_date, end_date, SMA, BB, IKH, sub_view)
+    p, returns_high_volatility, returns_low_volatility = regime_detection(ticker, start_date, end_date, BB, sub_view)
       
     if p != None:
       st.bokeh_chart(p, use_container_width=True)
