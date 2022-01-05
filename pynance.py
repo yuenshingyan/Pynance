@@ -534,7 +534,7 @@ st.bokeh_chart(p_seasonality, use_container_width=False)
 st.header("Portfolio Optimization")
 cols_tickers_from_to_capital = st.columns(3)
 
-default_tickers = "FB, AAPL, AMZN, NFLX, GOOG, MSFT, MSI, AMD, NVDA, F"
+default_tickers = "FB, AAPL, AMZN, NFLX, GOOG, MSFT, MSI, AMD, NVDA, F,MRVL, VCR, SONY, TSM"
 tickers = st.text_input(label="Please type in a portfolio", value=default_tickers)
 capital = cols_tickers_from_to_capital[0].number_input('Capital', value=10000)
 start_date_port_opt = cols_tickers_from_to_capital[1].date_input("From", one_year_ago, key="port_opt")
