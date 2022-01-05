@@ -90,7 +90,7 @@ def port_opt(acp):
     return cleaned_weights_min_volatility, cleaned_weights_max_sharpe, performance_stats_min_volatility, performance_stats_max_sharpe
 
 
-def regime_detection(ticker, start_date, end_date, bollinger_bands="No", ikh="No", sub_view="Volitility"):
+def regime_detection(ticker, start_date, end_date, bollinger_bands="No", sub_view="Volitility"):
     historical_price = yf.download(ticker, start=start_date, end=end_date)
     log_ret = np.log1p(historical_price['Adj Close'].pct_change(-1))
 
@@ -558,7 +558,7 @@ cleaned_weights_performance_stats = pd.DataFrame(cleaned_weights_performance_sta
                                                  columns=['Min Volatility (%)', 'Max Sharpe (%)'],
                                                  index=tickers.split(",") + ["Expected annual return",
                                                                              "Annual volatility", "Sharpe Ratio"])
-print(cleaned_weights)
+
 cleaned_weights_performance_stats.loc[:, 'Min Volatility (%)'] = cleaned_weights_performance_stats.loc[:,
                                                                  'Min Volatility (%)'] * 100
 cleaned_weights_performance_stats.loc[:, 'Max Sharpe (%)'] = cleaned_weights_performance_stats.loc[:,
