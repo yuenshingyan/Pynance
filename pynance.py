@@ -472,8 +472,7 @@ sub_view = cols_regime_detection3[1].selectbox('Sub View', options=['Volitility'
                                                                     'Relative Strength Index',
                                                                     'On-Balance Volume',
                                                                     'Stochastic Oscillator',
-                                                                    'Money Flow Index'],
-                                               index=0)
+                                                                    'Money Flow Index'],index=3)
 
 buttons = [one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [30, 90, 180, 365, 1095, 1825, 3650]
