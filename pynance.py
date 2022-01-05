@@ -226,6 +226,7 @@ def regime_detection(ticker, start_date, end_date, bollinger_bands="No", ikh="No
 
         # Stochastic Oscillator
         elif sub_view == "Stochastic Oscillator":
+            print("Fuck you")
             so = stochastic_oscillator(historical_price)
             p_sub_view.line(so.index, so, line_width=1)
             upper_threshold = Span(location=80, dimension='width', line_color='#FF8000', line_width=1, line_alpha=0.5,
@@ -472,7 +473,7 @@ sub_view = cols_regime_detection3[1].selectbox('Sub View', options=['Volitility'
                                                                     'Relative Strength Index',
                                                                     'On-Balance Volume',
                                                                     'Stochastic Oscillator',
-                                                                    'Money Flow Index'],index=3)
+                                                                    'Money Flow Index'],index=0)
 
 buttons = [one_month, three_months, six_months, one_year, three_years, five_years, ten_years]
 buttons_val = [30, 90, 180, 365, 1095, 1825, 3650]
